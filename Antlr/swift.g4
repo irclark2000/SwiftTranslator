@@ -27,128 +27,172 @@
  *  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Converted from Apple's doc, http://tinyurl.com/n8rkoue, to ANTLR's
- * meta-language.
+ * meta_language.
  */
 grammar Swift;
 
-// "The top-level code in a Swift source file consists of zero or more statements, declarations, and expressions."
-top_level : (statement | declaration | expression)* EOF ;
+@lexer::members {
+  public static final int WHITESPACE = 1;
+  public static final int COMMENT = 2;
+}
 
-// Statements
+top_level : (statement)* EOF ;
 
-// GRAMMAR OF A STATEMENT
+
+
+//Statements
+//GRAMMAR OF A STATEMENT
 
 statement : expression ';'?
  | declaration ';'?
+ | expression ';'?
  | loop_statement ';'?
  | branch_statement ';'?
- | labeled_statement
+ | labeled_statement ';'?
  | control_transfer_statement ';'?
- ;
+;
 
 statements : statement+ ;
 
-// GRAMMAR OF A LOOP STATEMENT
+//GRAMMAR OF A LOOP STATEMENT
 
 loop_statement : for_statement
  | for_in_statement
  | while_statement
  | do_while_statement
- ;
+;
 
-// GRAMMAR OF A FOR STATEMENT
+//GRAMMAR OF A FOR STATEMENT
 
-for_statement : 'for' for_init?';' expression?';' expression? code_block
- | 'for' ( for_init?';' expression?';' expression?) code_block
- ;
-for_init : variable_declaration | expression_list  ;
+for_statement : 'for' for_init? ';' expression? ';' expression? code_block
+ | 'for' ( for_init? ';' expression? ';' expression? ) code_block
+;
 
-// GRAMMAR OF A FOR_IN STATEMENT
+for_init : variable_declaration | expression_list ;
 
-for_in_statement : 'for' pattern 'in' expression code_block  ;
+//GRAMMAR OF A FOR-IN STATEMENT
 
-// GRAMMAR OF A WHILE STATEMENT
+for_in_statement : 'for' pattern 'in' expression code_block ;
 
-while_statement : 'while' while_condition code_block  ;
-while_condition : expression | declaration  ;
+//GRAMMAR OF A WHILE STATEMENT
 
-// GRAMMAR OF A DO_WHILE STATEMENT
+while_statement : 'while' while_condition code_block ;
 
-do_while_statement : 'do' code_block 'while' while_condition  ;
+while_condition : expression | declaration ;
 
-// GRAMMAR OF A BRANCH STATEMENT
+//GRAMMAR OF A DO-WHILE STATEMENT
 
-branch_statement : if_statement | switch_statement  ;
+do_while_statement : 'do' code_block 'while' while_condition ;
 
-// GRAMMAR OF AN IF STATEMENT
+//GRAMMAR OF A BRANCH STATEMENT
 
-if_statement : 'if' if_condition code_block else_clause? ;
-if_condition : expression | declaration  ;
-else_clause : 'else' code_block | 'else' if_statement  ;
+branch_statement : if_statement
+ | switch_statement
+;
 
-// GRAMMAR OF A SWITCH STATEMENT
+//GRAMMAR OF AN IF STATEMENT
 
-switch_statement : 'switch' expression '{' switch_cases? '}'  ;
-switch_cases : switch_case switch_cases? ;
-switch_case : case_label statements | default_label statements  | case_label ';' | default_label ';'  ;
+if_statement : 'if' if_condition code_block else_clause?
+;
+
+if_condition : expression | declaration
+;
+
+else_clause : 'else' code_block | 'else' if_statement
+;
+
+//GRAMMAR OF A SWITCH STATEMENT
+
+switch_statement : 'switch' expression '{' switch_cases? '}'
+;
+
+switch_cases : switch_case switch_cases?
+;
+
+switch_case : case_label statements | default_label statements
+ | case_label ';' | default_label ';'
+;
+
 case_label : 'case' case_item_list ':' ;
-case_item_list : pattern guard_clause?  pattern guard_clause?',' case_item_list  ;
+
+case_item_list : pattern guard_clause? (',' pattern guard_clause? )* ;
+
 default_label : 'default' ':' ;
+
 guard_clause : 'where' guard_expression ;
-guard_expression : expression  ;
 
-// GRAMMAR OF A LABELED STATEMENT
+guard_expression : expression
+;
 
-labeled_statement : statement_label loop_statement | statement_label switch_statement  ;
+//GRAMMAR OF A LABELED STATEMENT
+
+labeled_statement : statement_label loop_statement | statement_label switch_statement ;
+
 statement_label : label_name ':' ;
-label_name : identifier  ;
 
-// GRAMMAR OF A CONTROL TRANSFER STATEMENT
+label_name : identifier ;
+
+//GRAMMAR OF A CONTROL TRANSFER STATEMENT
 
 control_transfer_statement : break_statement
  | continue_statement
  | fallthrough_statement
  | return_statement
- ;
+;
 
-// GRAMMAR OF A BREAK STATEMENT
+//GRAMMAR OF A BREAK STATEMENT
 
-break_statement : 'break' label_name? ;
+break_statement : 'break' label_name?  ;
 
-// GRAMMAR OF A CONTINUE STATEMENT
+//GRAMMAR OF A CONTINUE STATEMENT
 
-continue_statement : 'continue' label_name? ;
+continue_statement : 'continue' label_name?  ;
 
-// GRAMMAR OF A FALLTHROUGH STATEMENT
+//GRAMMAR OF A FALLTHROUGH STATEMENT
 
-fallthrough_statement : 'fallthrough'  ;
+fallthrough_statement : 'fallthrough' ;
 
-// GRAMMAR OF A RETURN STATEMENT
+//GRAMMAR OF A RETURN STATEMENT
 
-return_statement : 'return' expression? ;
+return_statement : 'return' expression?  ;
 
-// Generic Parameters and Arguments
+//Generic Parameters and Arguments
+//GRAMMAR OF A GENERIC PARAMETER CLAUSE
 
-// GRAMMAR OF A GENERIC PARAMETER CLAUSE
+generic_parameter_clause : '<' generic_parameter_list requirement_clause? '>'
+;
 
-generic_parameter_clause : '<' generic_parameter_list requirement_clause?'>'  ;
-generic_parameter_list : generic_parameter | generic_parameter ',' generic_parameter_list  ;
-generic_parameter : type_name | type_name ':' type_identifier | type_name ':' protocol_composition_type  ;
-requirement_clause : 'where' requirement_list  ;
-requirement_list : requirement | requirement ',' requirement_list  ;
-requirement : conformance_requirement | same_type_requirement  ;
-conformance_requirement : type_identifier ':' type_identifier | type_identifier ':' protocol_composition_type  ;
-same_type_requirement : type_identifier '==' type_identifier  ;
+generic_parameter_list : generic_parameter (',' generic_parameter )*
+;
 
-// GRAMMAR OF A GENERIC ARGUMENT CLAUSE
+generic_parameter : type_name
+ | type_name ':' type_identifier
+ | type_name ':' protocol_composition_type
+;
 
-generic_argument_clause : '<' generic_argument_list '>'  ;
-generic_argument_list : generic_argument | generic_argument ',' generic_argument_list  ;
-generic_argument : type  ;
+requirement_clause : 'where' requirement_list ;
 
-// Declarations
+requirement_list : requirement (',' requirement )* ;
 
-// GRAMMAR OF A DECLARATION
+requirement : conformance_requirement | same_type_requirement
+;
+
+conformance_requirement : type_identifier ':' type_identifier
+ | type_identifier ':' protocol_composition_type ;
+
+same_type_requirement : type_identifier ('==' | '!=') type_identifier ;
+
+//GRAMMAR OF A GENERIC ARGUMENT CLAUSE
+
+generic_argument_clause : '<' generic_argument_list '>'
+;
+
+generic_argument_list : generic_argument (',' generic_argument )* ;
+
+generic_argument : type ;
+
+//Declarations
+//GRAMMAR OF A DECLARATION
 
 declaration : import_declaration
  | constant_declaration
@@ -164,287 +208,467 @@ declaration : import_declaration
  | extension_declaration
  | subscript_declaration
  | operator_declaration
- ;
+;
 
-declarations : declaration declarations? ;
-declaration_specifiers : declaration_specifier declaration_specifiers? ;
-declaration_specifier : 'class' | 'mutating' | 'nonmutating' | 'override' | 'static' | 'unowned' | 'unowned(safe)' | 'unowned(unsafe)' | 'weak' ;
+declarations : declaration+ ;
 
-// GRAMMAR OF A CODE BLOCK
+//GRAMMAR OF A TOP-LEVEL DECLARATION
 
-code_block : '{' statements? '}'  ;
+top_level_declaration : statements?  ;
 
-// GRAMMAR OF AN IMPORT DECLARATION
+//GRAMMAR OF A CODE BLOCK
 
-import_declaration : attributes? 'import' import_kind? import_path  ;
-import_kind : 'typealias' | 'struct' | 'class' | 'enum' | 'protocol' | 'var' | 'func'  ;
-import_path : import_path_identifier | import_path_identifier . import_path  ;
-import_path_identifier : identifier | Operator  ;
+code_block : '{' statements? '}' ;
 
-// GRAMMAR OF A CONSTANT DECLARATION
+//GRAMMAR OF AN IMPORT DECLARATION
 
-constant_declaration : attributes? declaration_specifiers? 'let' pattern_initializer_list  ;
-pattern_initializer_list : pattern_initializer | pattern_initializer ',' pattern_initializer_list  ;
-pattern_initializer : pattern initializer? ;
-initializer : '=' expression  ;
+import_declaration : attributes? 'import' import_kind? import_path ;
 
-// GRAMMAR OF A VARIABLE DECLARATION
+import_kind : 'typealias' | 'struct' | 'class' | 'enum' | 'protocol' | 'var' | 'func' ;
+
+import_path : import_path_identifier | import_path_identifier '.' import_path ;
+
+import_path_identifier : identifier | operator ;
+
+//GRAMMAR OF A CONSTANT DECLARATION
+
+constant_declaration : attributes? declaration_modifiers? 'let' pattern_initializer_list ;
+
+pattern_initializer_list : pattern_initializer (',' pattern_initializer )* ;
+
+pattern_initializer : pattern initializer?  ;
+
+initializer : '=' expression ;
+
+//GRAMMAR OF A VARIABLE DECLARATION
 
 variable_declaration : variable_declaration_head pattern_initializer_list
  | variable_declaration_head variable_name type_annotation code_block
  | variable_declaration_head variable_name type_annotation getter_setter_block
  | variable_declaration_head variable_name type_annotation getter_setter_keyword_block
  | variable_declaration_head variable_name type_annotation initializer? willSet_didSet_block
- ;
+;
 
-variable_declaration_head : attributes? declaration_specifiers? 'var'  ;
-variable_name : identifier  ;
-getter_setter_block : '{' getter_clause setter_clause?'}'  | '{' setter_clause getter_clause '}'  ;
-getter_clause : attributes? 'get' code_block  ;
-setter_clause : attributes? 'set' setter_name? code_block  ;
-setter_name : ( identifier )  ;
-getter_setter_keyword_block : '{' getter_keyword_clause setter_keyword_clause?'}' | '{' setter_keyword_clause getter_keyword_clause '}'  ;
-getter_keyword_clause : attributes? 'get'  ;
-setter_keyword_clause : attributes? 'set'  ;
-willSet_didSet_block : '{' willSet_clause didSet_clause?'}' | '{' didSet_clause willSet_clause '}'  ;
-willSet_clause : attributes? 'willSet' setter_name? code_block  ;
-didSet_clause : attributes? 'didSet' setter_name? code_block  ;
+variable_declaration_head : attributes? declaration_modifiers? 'var' ;
 
-// GRAMMAR OF A TYPE ALIAS DECLARATION
+variable_name : identifier ;
 
-typealias_declaration : typealias_head typealias_assignment  ;
-typealias_head : 'typealias' typealias_name  ;
-typealias_name : identifier  ;
-typealias_assignment : '=' type  ;
+getter_setter_block : '{' getter_clause setter_clause? '}'
+ | '{' setter_clause getter_clause '}'
+;
 
-// GRAMMAR OF A FUNCTION DECLARATION
+getter_clause : attributes? 'get' code_block ;
 
-function_declaration : function_head function_name generic_parameter_clause? function_signature function_body  ;
-function_head : attributes? declaration_specifiers? 'func'  ;
-function_name : identifier |  Operator  ;
-function_signature : parameter_clauses function_result? ;
-function_result : '->' attributes? type  ;
-function_body : code_block  ;
-parameter_clauses : parameter_clause parameter_clauses? ;
-parameter_clause : '(' ')' |  '(' parameter_list '...'? ')'  ;
-parameter_list : parameter | parameter ',' parameter_list  ;
-parameter : 'inout'? 'let'? '#'? parameter_name local_parameter_name? type_annotation default_argument_clause?
- | 'inout'? 'var' '#'? parameter_name local_parameter_name? type_annotation default_argument_clause?
+setter_clause : attributes? 'set' setter_name? code_block ;
+
+setter_name : '(' identifier ')'
+;
+
+getter_setter_keyword_block : '{' getter_keyword_clause setter_keyword_clause? '}'
+ | '{' setter_keyword_clause getter_keyword_clause '}'
+;
+
+getter_keyword_clause : attributes? 'get' ;
+
+setter_keyword_clause : attributes? 'set' ;
+
+willSet_didSet_block : '{' willSet_clause didSet_clause? '}'
+ | '{' didSet_clause willSet_clause '}'
+;
+
+willSet_clause : attributes? 'willSet' setter_name? code_block ;
+
+didSet_clause : attributes? 'didSet' setter_name? code_block ;
+
+//GRAMMAR OF A TYPE ALIAS DECLARATION
+
+typealias_declaration : typealias_head typealias_assignment ;
+
+typealias_head : attributes? access_level_modifier? 'typealias' typealias_name ;
+
+typealias_name : identifier ;
+
+typealias_assignment : '=' type ;
+
+//GRAMMAR OF A FUNCTION DECLARATION
+
+function_declaration : function_head function_name generic_parameter_clause? function_signature function_body ;
+
+function_head : attributes? declaration_modifiers? 'func' ;
+
+function_name : identifier | operator ;
+
+function_signature : parameter_clauses function_result?  ;
+
+function_result : '->' attributes? type ;
+
+function_body : code_block ;
+
+parameter_clauses : parameter_clause parameter_clauses?  ;
+
+parameter_clause : '(' ')' | '(' parameter_list '...'? ')' ;
+
+parameter_list : parameter ( ',' parameter )* ;
+
+parameter : 'inout'? 'let'? '#'? external_parameter_name? local_parameter_name type_annotation default_argument_clause?
+ | 'inout'? 'var' '#'? external_parameter_name? local_parameter_name type_annotation default_argument_clause?
  | attributes? type
- ;
-parameter_name : identifier | '_'  ;
-local_parameter_name : identifier | '_'  ;
-default_argument_clause : '=' expression  ;
+;
 
-// GRAMMAR OF AN ENUMERATION DECLARATION
+external_parameter_name : identifier | '_' ;
 
-enum_declaration : attributes? union_style_enum | attributes? raw_value_style_enum  ;
-union_style_enum : enum_name generic_parameter_clause?'{' union_style_enum_members?'}'  ;
-union_style_enum_members : union_style_enum_member union_style_enum_members? ;
-union_style_enum_member : declaration | union_style_enum_case_clause  ;
-union_style_enum_case_clause : attributes? 'case' union_style_enum_case_list  ;
-union_style_enum_case_list : union_style_enum_case | union_style_enum_case ',' union_style_enum_case_list  ;
-union_style_enum_case : enum_case_name tuple_type? ;
-enum_name : identifier  ;
-enum_case_name : identifier  ;
-raw_value_style_enum : enum_name generic_parameter_clause? ':' type_identifier '{' raw_value_style_enum_members?'}'  ;
-raw_value_style_enum_members : raw_value_style_enum_member raw_value_style_enum_members? ;
-raw_value_style_enum_member : declaration | raw_value_style_enum_case_clause  ;
-raw_value_style_enum_case_clause : attributes? 'case' raw_value_style_enum_case_list  ;
-raw_value_style_enum_case_list : raw_value_style_enum_case | raw_value_style_enum_case ',' raw_value_style_enum_case_list  ;
-raw_value_style_enum_case : enum_case_name raw_value_assignment? ;
-raw_value_assignment : '=' literal  ;
+local_parameter_name : identifier | '_' ;
 
-// GRAMMAR OF A STRUCTURE DECLARATION
+default_argument_clause : '=' expression ;
 
-struct_declaration : attributes? 'struct' struct_name generic_parameter_clause? type_inheritance_clause? struct_body  ;
-struct_name : identifier  ;
-struct_body : '{' declarations?'}'  ;
+//GRAMMAR OF AN ENUMERATION DECLARATION
 
-// GRAMMAR OF A CLASS DECLARATION
+enum_declaration : attributes? access_level_modifier? union_style_enum
+ | attributes? access_level_modifier? raw_value_style_enum
+;
 
-class_declaration : attributes? 'class' class_name generic_parameter_clause? type_inheritance_clause? class_body  ;
-class_name : identifier  ;
-class_body : '{' declarations?'}'  ;
+union_style_enum : 'enum' enum_name generic_parameter_clause? type_inheritance_clause? '{' union_style_enum_members? '}'
+;
 
-// GRAMMAR OF A PROTOCOL DECLARATION
+union_style_enum_members : union_style_enum_member union_style_enum_members?
+;
 
-protocol_declaration : attributes? 'protocol' protocol_name type_inheritance_clause? protocol_body  ;
-protocol_name : identifier  ;
-protocol_body : '{' protocol_member_declarations?'}'  ;
+union_style_enum_member : declaration | union_style_enum_case_clause
+;
+
+union_style_enum_case_clause : attributes? 'case' union_style_enum_case_list
+;
+
+union_style_enum_case_list : union_style_enum_case (',' union_style_enum_case )* ;
+
+union_style_enum_case : enum_case_name tuple_type?  ;
+
+enum_name : identifier ;
+
+enum_case_name : identifier
+;
+
+raw_value_style_enum : 'enum' enum_name generic_parameter_clause? type_inheritance_clause '{' raw_value_style_enum_members '}' ;
+
+raw_value_style_enum_members : raw_value_style_enum_member+ ;
+
+raw_value_style_enum_member : declaration | raw_value_style_enum_case_clause ;
+
+raw_value_style_enum_case_clause : attributes? 'case' raw_value_style_enum_case_list ;
+
+raw_value_style_enum_case_list : raw_value_style_enum_case (',' raw_value_style_enum_case )* ;
+
+raw_value_style_enum_case : enum_case_name raw_value_assignment?  ;
+
+raw_value_assignment : '=' literal ;
+
+//GRAMMAR OF A STRUCTURE DECLARATION
+
+struct_declaration : attributes? access_level_modifier? 'struct' struct_name generic_parameter_clause? type_inheritance_clause? struct_body ;
+
+struct_name : identifier ;
+
+struct_body : '{' declarations? '}' ;
+
+//GRAMMAR OF A CLASS DECLARATION
+
+class_declaration : attributes? access_level_modifier? 'class' class_name generic_parameter_clause? type_inheritance_clause? class_body ;
+
+class_name : identifier ;
+
+class_body : '{' declarations? '}' ;
+
+//GRAMMAR OF A PROTOCOL DECLARATION
+
+protocol_declaration : attributes? access_level_modifier? 'protocol' protocol_name type_inheritance_clause? protocol_body ;
+
+protocol_name : identifier ;
+
+protocol_body : '{' protocol_member_declarations? '}' ;
+
 protocol_member_declaration : protocol_property_declaration
  | protocol_method_declaration
  | protocol_initializer_declaration
  | protocol_subscript_declaration
  | protocol_associated_type_declaration
- ;
-protocol_member_declarations : protocol_member_declaration protocol_member_declarations? ;
+;
 
-// GRAMMAR OF A PROTOCOL PROPERTY DECLARATION
+protocol_member_declarations : protocol_member_declaration protocol_member_declarations?  ;
 
-protocol_property_declaration : variable_declaration_head variable_name type_annotation getter_setter_keyword_block  ;
+//GRAMMAR OF A PROTOCOL PROPERTY DECLARATION
 
-// GRAMMAR OF A PROTOCOL METHOD DECLARATION
+protocol_property_declaration : variable_declaration_head variable_name type_annotation getter_setter_keyword_block ;
 
-protocol_method_declaration : function_head function_name generic_parameter_clause? function_signature  ;
+//GRAMMAR OF A PROTOCOL METHOD DECLARATION
 
-// GRAMMAR OF A PROTOCOL INITIALIZER DECLARATION
+protocol_method_declaration : function_head function_name generic_parameter_clause? function_signature ;
 
-protocol_initializer_declaration : initializer_head generic_parameter_clause? parameter_clause  ;
+//GRAMMAR OF A PROTOCOL INITIALIZER DECLARATION
 
-// GRAMMAR OF A PROTOCOL SUBSCRIPT DECLARATION
+protocol_initializer_declaration : initializer_head generic_parameter_clause? parameter_clause ;
 
-protocol_subscript_declaration : subscript_head subscript_result getter_setter_keyword_block  ;
+//GRAMMAR OF A PROTOCOL SUBSCRIPT DECLARATION
 
-// GRAMMAR OF A PROTOCOL ASSOCIATED TYPE DECLARATION
+protocol_subscript_declaration : subscript_head subscript_result getter_setter_keyword_block ;
 
-protocol_associated_type_declaration : typealias_head type_inheritance_clause? typealias_assignment? ;
+//GRAMMAR OF A PROTOCOL ASSOCIATED TYPE DECLARATION
 
-// GRAMMAR OF AN INITIALIZER DECLARATION
+protocol_associated_type_declaration : typealias_head type_inheritance_clause? typealias_assignment?  ;
 
-initializer_declaration : initializer_head generic_parameter_clause? parameter_clause initializer_body  ;
-initializer_head : attributes? 'convenience'? 'init'  ;
-initializer_body : code_block  ;
+//GRAMMAR OF AN INITIALIZER DECLARATION
 
-// GRAMMAR OF A DEINITIALIZER DECLARATION
+initializer_declaration : initializer_head generic_parameter_clause? parameter_clause initializer_body ;
 
-deinitializer_declaration : attributes? 'deinit' code_block  ;
+initializer_head : attributes? declaration_modifiers? 'init' ;
 
-// GRAMMAR OF AN EXTENSION DECLARATION
+initializer_body : code_block ;
 
-extension_declaration : 'extension' type_identifier type_inheritance_clause? extension_body  ;
-extension_body : '{' declarations?'}'  ;
+//GRAMMAR OF A DEINITIALIZER DECLARATION
 
-// GRAMMAR OF A SUBSCRIPT DECLARATION
+deinitializer_declaration : attributes? 'deinit' code_block ;
+
+//GRAMMAR OF AN EXTENSION DECLARATION
+
+extension_declaration : access_level_modifier? 'extension' type_identifier type_inheritance_clause? extension_body ;
+
+extension_body : '{' declarations? '}' ;
+
+//GRAMMAR OF A SUBSCRIPT DECLARATION
 
 subscript_declaration : subscript_head subscript_result code_block
  | subscript_head subscript_result getter_setter_block
  | subscript_head subscript_result getter_setter_keyword_block
- ;
-subscript_head : attributes? 'subscript' parameter_clause  ;
-subscript_result : '->' attributes? type  ;
+;
 
-// GRAMMAR OF AN OPERATOR DECLARATION
+subscript_head : attributes? declaration_modifiers? 'subscript' parameter_clause ;
 
-operator_declaration : prefix_operator_declaration | postfix_operator_declaration | infix_operator_declaration  ;
-prefix_operator_declaration : 'operator' 'prefix' 'operator' '{' '}'  ;
-postfix_operator_declaration : 'operator' 'postfix' 'operator' '{' '}'  ;
-infix_operator_declaration : 'operator' 'infix' 'operator' '{' infix_operator_attributes '}'  ;
-infix_operator_attributes : precedence_clause? associativity_clause? ;
-precedence_clause : 'precedence' precedence_level  ;
-precedence_level : integer_literal ;
-associativity_clause : 'associativity' associativity  ;
-associativity : 'left' | 'right' | 'none'  ;
+subscript_result : '->' attributes? type ;
 
-// Patterns
+//GRAMMAR OF AN OPERATOR DECLARATION
 
+operator_declaration : prefix_operator_declaration | postfix_operator_declaration | infix_operator_declaration ;
+prefix_operator_declaration : 'prefix' 'operator' operator '{' '}' ;
+postfix_operator_declaration : 'postfix' 'operator' operator '{' '}' ;
+infix_operator_declaration : 'infix' 'operator' operator '{' infix_operator_attributes? '}' ;
+infix_operator_attributes : precedence_clause? associativity_clause?  ;
+precedence_clause : 'precedence' precedence_level ;
+precedence_level : Decimal_literal ;
+associativity_clause : 'associativity' associativity ;
+associativity : 'left' | 'right' | 'none' ;
 
-// GRAMMAR OF A PATTERN
+//GRAMMAR OF A DECLARATION MODIFIER
 
-pattern
- : wildcard_pattern type_annotation?
+declaration_modifier : 'class' | 'convenience' | 'dynamic' | 'final' | 'infix' | 'lazy' | 'mutating' | 'nonmutating' | '?' 'ional' | 'override' | 'postfix' | 'prefix' | 'required' | 'static' | 'unowned' | 'unowned' '(' 'safe' ')' | 'unowned' '(' 'unsafe' ')' | 'weak'
+ | access_level_modifier
+;
+
+declaration_modifiers : declaration_modifier declaration_modifiers?  ;
+
+access_level_modifier : 'internal' | 'internal' '(' 'set' ')'
+ | 'private' | 'private' '(' 'set' ')'
+ | 'public' | 'public' '(' 'set' ')'
+;
+
+access_level_modifiers : access_level_modifier+ ;
+
+//Patterns
+//GRAMMAR OF A PATTERN
+
+pattern : wildcard_pattern type_annotation?
  | identifier_pattern type_annotation?
  | value_binding_pattern
  | tuple_pattern type_annotation?
  | enum_case_pattern
- | 'is' type
- | pattern 'as' type
+ //| type_casting_pattern
+ | 'is' type | pattern 'as' type
  | expression_pattern
+;
+
+//GRAMMAR OF A WILDCARD PATTERN
+
+wildcard_pattern : '_' ;
+
+//GRAMMAR OF AN IDENTIFIER PATTERN
+
+identifier_pattern : identifier ;
+
+//GRAMMAR OF A VALUE-BINDING PATTERN
+
+value_binding_pattern : 'var' pattern | 'let' pattern ;
+
+//GRAMMAR OF A TUPLE PATTERN
+
+tuple_pattern : '(' tuple_pattern_element_list? ')' ;
+
+tuple_pattern_element_list : tuple_pattern_element | tuple_pattern_element ',' tuple_pattern_element_list ;
+
+tuple_pattern_element : pattern ;
+
+//GRAMMAR OF AN ENUMERATION CASE PATTERN
+
+enum_case_pattern : type_identifier? '.' enum_case_name tuple_pattern?  ;
+
+//GRAMMAR OF A TYPE CASTING PATTERN
+
+type_casting_pattern : 'is' type | pattern 'as' type ;
+
+is_pattern : 'is' type ;
+
+as_pattern : pattern 'as' type ;
+
+//GRAMMAR OF AN EXPRESSION PATTERN
+
+expression_pattern : expression ;
+
+//Attributes
+//GRAMMAR OF AN ATTRIBUTE
+
+attribute : '@' attribute_name attribute_argument_clause?  ;
+
+attribute_name : identifier ;
+
+attribute_argument_clause : '(' balanced_tokens? ')' ;
+
+attributes : attribute+ ;
+
+balanced_tokens : balanced_token+ ;
+
+balanced_token : '(' balanced_tokens? ')'
+ | '[' balanced_tokens? ']'
+ | '{' balanced_tokens? '}'
+ | identifier | expression | context_sensitive_keyword | literal | operator
+// | Any punctuation except  '(' ,  ')' ,  '[' ,  ']' ,  '{' , or  '}'
  ;
 
-// GRAMMAR OF A WILDCARD PATTERN
-
-wildcard_pattern : '_'  ;
-
-// GRAMMAR OF AN IDENTIFIER PATTERN
-
-identifier_pattern : identifier  ;
-
-// GRAMMAR OF A VALUE_BINDING PATTERN
-
-value_binding_pattern : 'var' pattern | 'let' pattern  ;
-
-// GRAMMAR OF A TUPLE PATTERN
-
-tuple_pattern : '(' tuple_pattern_element_list? ')'  ;
-tuple_pattern_element_list
-	:	tuple_pattern_element (',' tuple_pattern_element)*
-	;
-tuple_pattern_element : pattern  ;
-
-// GRAMMAR OF AN ENUMERATION CASE PATTERN
-
-enum_case_pattern : type_identifier? '.' enum_case_name tuple_pattern? ;
-
-// GRAMMAR OF A TYPE CASTING PATTERN
-
-type_casting_pattern : is_pattern | as_pattern  ;
-is_pattern : 'is' type  ;
-as_pattern : pattern 'as' type  ;
-
-// GRAMMAR OF AN EXPRESSION PATTERN
-
-expression_pattern : expression  ;
-
-// Attributes
-
-// GRAMMAR OF AN ATTRIBUTE
-
-attribute : '@' attribute_name attribute_argument_clause? ;
-attribute_name : identifier  ;
-attribute_argument_clause : '('  balanced_tokens?  ')'  ;
-attributes : attribute attributes? ;
-balanced_tokens : balanced_token balanced_tokens? ;
-balanced_token : '('  balanced_tokens? ')'
- | '[' balanced_tokens?']'
- | '{' balanced_tokens?'}'
- | identifier | expression | context_sensitive_keyword | literal | Operator
-// | Any punctuation except ( ,  ')' , '[' , ']' , { , or }
+context_sensitive_keyword :
+ 'associativity' | DIDSET | GET | 'infix' | 'inout' | 'left' | 'mutating' | 'none' | 'nonmutating' | 'operator' | 'override' | 'postfix' | 'precedence' | 'prefix' | 'right' | SET | 'unowned' | 'unowned(safe)' | 'unowned(unsafe)' | 'weak' | WILLSET | 'init'
  ;
 
-// Expressions
 
-// GRAMMAR OF AN EXPRESSION
+//Expressions
+//GRAMMAR OF AN EXPRESSION
 
-expression_list : expression (',' expression)* ;
+expression : prefix_expression binary_expressions?  ;
 
-expression
-	:	prefix_operator expression
-    |	in_out_expression
-    |	primary_expression
-    |	expression binary_operator expression
-    |	expression assignment_operator expression
-    |	expression conditional_operator expression
-    |	expression type_casting_operator
-    |	expression postfix_operator
-    |	expression parenthesized_expression trailing_closure?
-	|	expression '.' 'init'
- 	|	expression '.' Decimal_literal
-	|	expression '.' identifier generic_argument_clause?
-	|	expression '.' 'self'
-	|	expression '.' 'dynamicType'
-	|	expression '[' expression_list ']'
-	|	expression '!'
-	|	expression '?'
-	;
+expression_list : expression (',' expression )* ;
 
-// GRAMMAR OF A PREFIX EXPRESSION
+//GRAMMAR OF A PREFIX EXPRESSION
+
+prefix_expression : prefix_operator prefix_expression
+ | postfix_expression
+ | in_out_expression
+;
 
 in_out_expression : '&' identifier ;
 
-// GRAMMAR OF AN ASSIGNMENT OPERATOR
+//GRAMMAR OF A BINARY EXPRESSION
 
-assignment_operator : '='  ;
+binary_expression : binary_operator prefix_expression
+ | assignment_operator prefix_expression
+ | conditional_operator prefix_expression
+ | type_casting_operator
+;
 
-// GRAMMAR OF A CONDITIONAL OPERATOR
+binary_expressions : binary_expression+ ;
+
+//GRAMMAR OF AN ASSIGNMENT OPERATOR
+
+assignment_operator : '=' ;
+
+//GRAMMAR OF A CONDITIONAL OPERATOR
 
 conditional_operator : '?' expression ':' ;
 
-// GRAMMAR OF A TYPE_CASTING OPERATOR
+//GRAMMAR OF A TYPE-CASTING OPERATOR
 
-type_casting_operator : 'is' type | 'as' '?'? type ;
+type_casting_operator : 'is' type
+ | 'as' type
+ | 'as' '?' type
+;
 
-// GRAMMAR OF A POSTFIX EXPRESSION
+//GRAMMAR OF A PRIMARY EXPRESSION
+
+primary_expression : identifier generic_argument_clause?
+ | literal_expression
+ | self_expression
+ | superclass_expression
+ | closure_expression
+ | parenthesized_expression
+ | implicit_member_expression
+ | wildcard_expression
+;
+
+//unary_op : MINUS | PLUS;
+
+//GRAMMAR OF A LITERAL EXPRESSION
+
+literal_expression : literal
+ | array_literal | dictionary_literal
+ | '__FILE__' | '__LINE__' | '__COLUMN__' | '__FUNCTION__'
+;
+
+array_literal : '[' array_literal_items? ']' ;
+
+array_literal_items : array_literal_item ','? | array_literal_item (',' array_literal_item )* ;
+
+array_literal_item : expression ;
+
+dictionary_literal : '[' dictionary_literal_items ']' | '[' ':' ']' ;
+
+dictionary_literal_items : dictionary_literal_item ','? | dictionary_literal_item (',' dictionary_literal_item)* ;
+
+dictionary_literal_item : expression ':' expression ;
+
+//GRAMMAR OF A SELF EXPRESSION
+
+self_expression : 'self'
+ | 'self' '.' identifier
+ | 'self' '[' expression ']'
+ | 'self' '.' 'init'
+;
+
+//GRAMMAR OF A SUPERCLASS EXPRESSION
+
+superclass_expression : superclass_method_expression | superclass_subscript_expression superclass_initializer_expression ;
+
+superclass_method_expression : 'super' '.' identifier ;
+
+superclass_subscript_expression : 'super' '[' expression ']' ;
+
+superclass_initializer_expression : 'super' '.' 'init' ;
+
+//GRAMMAR OF A CLOSURE EXPRESSION
+
+closure_expression : '{' closure_signature? statements '}' ;
+
+closure_signature : parameter_clause function_result? 'in'
+ | identifier_list function_result? 'in'
+ | capture_list parameter_clause function_result? 'in'
+ | capture_list identifier_list function_result? 'in'
+ | capture_list 'in'
+;
+
+capture_list : '[' capture_specifier expression ']' ;
+
+capture_specifier : 'weak' | 'unowned' | 'unowned(safe)' | 'unowned(unsafe)' ;
+
+//GRAMMAR OF A IMPLICIT MEMBER EXPRESSION
+
+implicit_member_expression : '.' identifier ;
+
+//GRAMMAR OF A PARENTHESIZED EXPRESSION
+
+parenthesized_expression : '(' expression_element_list? ')' ;
+
+expression_element_list : expression_element | expression_element (',' expression_element )* ;
+
+expression_element : expression | identifier ':' expression ;
+
+//GRAMMAR OF A WILDCARD EXPRESSION
+
+wildcard_expression : '_' ;
+
+//GRAMMAR OF A POSTFIX EXPRESSION
 
 /*
 postfix_expression : primary_expression
@@ -457,162 +681,238 @@ postfix_expression : primary_expression
  | subscript_expression
  | forced_value_expression
  | optional_chaining_expression
- ;
+;
 */
 
-// GRAMMAR OF A FUNCTION CALL EXPRESSION
+postfix_expression : primary_expression
+ | postfix_expression postfix_operator
+ | postfix_expression (function_call_expression
+ | initializer_expression
+ | explicit_member_expression
+ | postfix_self_expression
+ | dynamic_type_expression
+ | subscript_expression
+ | forced_value_expression
+ | optional_chaining_expression) 
+;
 
-trailing_closure : closure_expression  ;
+//GRAMMAR OF A FUNCTION CALL EXPRESSION
 
-// GRAMMAR OF A PRIMARY EXPRESSION
+function_call_expression : parenthesized_expression 
+  | parenthesized_expression? trailing_closure
+;
 
-primary_expression
- : identifier generic_argument_clause?
- | literal_expression
- | self_expression
- | superclass_expression
- | closure_expression
- | parenthesized_expression
- | implicit_member_expression
- | wildcard_expression
- ;
+trailing_closure : closure_expression ;
 
-// GRAMMAR OF A LITERAL EXPRESSION
+//GRAMMAR OF AN INITIALIZER EXPRESSION
 
-literal_expression : literal
- | array_literal | dictionary_literal
- | '__FILE__' | '__LINE__' | '__COLUMN__' | '__FUNCTION__'  ;
-array_literal : '[' array_literal_items? ']'  ;
-array_literal_items : array_literal_item ','?  array_literal_item ',' array_literal_items  ;
-array_literal_item : expression  ;
-dictionary_literal : '[' dictionary_literal_items ']' | '[' ':' ']'  ;
-dictionary_literal_items : dictionary_literal_item ','?  dictionary_literal_item ',' dictionary_literal_items  ;
-dictionary_literal_item : expression ':' expression  ;
+initializer_expression : '.' 'init' ;
 
-// GRAMMAR OF A SELF EXPRESSION
+//GRAMMAR OF AN EXPLICIT MEMBER EXPRESSION
 
-self_expression : 'self'
- | 'self' '.' identifier
- | 'self' '[' expression ']'
- | 'self' '.' 'init'
- ;
+explicit_member_expression : '.' decimal_digits
+ | '.' identifier generic_argument_clause?  ;
 
-// GRAMMAR OF A SUPERCLASS EXPRESSION
+//GRAMMAR OF A SELF EXPRESSION
 
-superclass_expression : superclass_method_expression | superclass_subscript_expression  superclass_initializer_expression  ;
-superclass_method_expression : 'super' '.' identifier  ;
-superclass_subscript_expression : 'super' '[' expression ']'  ;
-superclass_initializer_expression : 'super' '.' 'init'  ;
+postfix_self_expression : '.' 'self' ;
 
-// GRAMMAR OF A CLOSURE EXPRESSION
+//GRAMMAR OF A DYNAMIC TYPE EXPRESSION
 
-closure_expression : '{' closure_signature? statements '}'  ;
-closure_signature : parameter_clause function_result? 'in'
- | identifier_list function_result? 'in'
- | capture_list parameter_clause function_result? 'in'
- | capture_list identifier_list function_result? 'in'
- | capture_list 'in'
- ;
-capture_list : '[' capture_specifier expression ']'  ;
-capture_specifier : 'weak' | 'unowned' | 'unowned(safe)' | 'unowned(unsafe)'  ;
+dynamic_type_expression : '.' 'dynamicType' ;
 
-// GRAMMAR OF A IMPLICIT MEMBER EXPRESSION
+//GRAMMAR OF A SUBSCRIPT EXPRESSION
 
-implicit_member_expression : '.' identifier  ;
+subscript_expression : '[' expression_list ']' ;
 
-// GRAMMAR OF A PARENTHESIZED EXPRESSION
+//GRAMMAR OF A FORCED-VALUE EXPRESSION
 
-parenthesized_expression : '('  expression_element_list? ')'  ;
-expression_element_list : expression_element | expression_element ',' expression_element_list  ;
-expression_element : expression | identifier ':' expression  ;
+forced_value_expression : '!' ;
 
-// GRAMMAR OF A WILDCARD EXPRESSION
+//GRAMMAR OF AN OPTIONAL-CHAINING EXPRESSION
 
-wildcard_expression : '_'  ;
+optional_chaining_expression : '?' ;
 
-// GRAMMAR OF OPERATORS
 
-Operator : Operator_character+ ;
-fragment Operator_character : [/=\-+!*%<>&|^!.] ;
-binary_operator : Operator ;
-prefix_operator : Operator  ;
-postfix_operator : Operator  ;
+//Types
+//GRAMMAR OF A TYPE
 
-// Types
+type : array_type | dictionary_type 
+//| function_type 
+| type '->' type 
+| type_identifier | tuple_type 
+//| optional_type 
+| type '?' 
+//| implicitly_unwrapped_optional_type 
+| type '!' 
+| protocol_composition_type 
+//| metatype_type
+| type '.' 'Type' | type '.' 'Protocol' 
+;
 
-// GRAMMAR OF A TYPE
+//GRAMMAR OF A TYPE ANNOTATION
 
-type
- : type '[' ']'
- | type '->' type
- | type_identifier
- | tuple_type
- | type '?'
- | type '!'
- | protocol_composition_type
- | type '.' 'Type'
- | type '.' 'Protocol'
- ;
+type_annotation : ':' attributes? type ;
 
-// GRAMMAR OF A TYPE ANNOTATION
+//GRAMMAR OF A TYPE IDENTIFIER
 
-type_annotation : ':' attributes? type  ;
+type_identifier : type_name generic_argument_clause? | type_name generic_argument_clause? '.' type_identifier
+;
 
-// GRAMMAR OF A TYPE IDENTIFIER
+type_name : identifier ;
 
-type_identifier : type_name generic_argument_clause? type_name generic_argument_clause? '.' type_identifier  ;
-type_name : identifier  ;
+//GRAMMAR OF A TUPLE TYPE
 
-// GRAMMAR OF A TUPLE TYPE
+tuple_type : '(' tuple_type_body? ')' ;
 
-tuple_type : '('  tuple_type_body? ')'  ;
-tuple_type_body : tuple_type_element_list '...'? ;
-tuple_type_element_list : tuple_type_element | tuple_type_element ',' tuple_type_element_list  ;
-tuple_type_element : attributes? 'inout'? type | 'inout'? element_name type_annotation ;
-element_name : identifier  ;
+tuple_type_body : tuple_type_element_list '...'?  ;
 
-// GRAMMAR OF A FUNCTION TYPE
+tuple_type_element_list : tuple_type_element (',' tuple_type_element )* ;
 
-function_type : type '->' type  ;
+tuple_type_element : attributes? 'inout'? type | 'inout'? element_name type_annotation
+;
 
-// GRAMMAR OF AN ARRAY TYPE
+element_name : identifier ;
 
-array_type : type '[' ']' | array_type '[' ']'  ;
+//GRAMMAR OF A FUNCTION TYPE
 
-// GRAMMAR OF AN OPTIONAL TYPE
+function_type : type '->' type ;
 
-optional_type : type '?'  ;
+//GRAMMAR OF AN ARRAY TYPE
 
-// GRAMMAR OF AN IMPLICITLY UNWRAPPED OPTIONAL TYPE
+array_type : '[' type ']' ;
 
-implicitly_unwrapped_optional_type : type '!'  ;
+//GRAMMAR OF A DICTIONARY TYPE
 
-// GRAMMAR OF A PROTOCOL COMPOSITION TYPE
+dictionary_type : '[' type ':' type ']' ;
 
-protocol_composition_type : 'protocol' '<' protocol_identifier_list?'>'  ;
-protocol_identifier_list : protocol_identifier | protocol_identifier ',' protocol_identifier_list  ;
-protocol_identifier : type_identifier  ;
+//GRAMMAR OF AN OPTIONAL TYPE
 
-// GRAMMAR OF A METATYPE TYPE
+optional_type : type '?' ;
 
-metatype_type : type '.' 'Type' | type '.' 'Protocol';
+//GRAMMAR OF AN IMPLICITLY UNWRAPPED OPTIONAL TYPE
 
-// GRAMMAR OF A TYPE INHERITANCE CLAUSE
+implicitly_unwrapped_optional_type : type '!' ;
 
-type_inheritance_clause : ':' type_inheritance_list  ;
-type_inheritance_list : type_identifier | type_identifier ',' type_inheritance_list  ;
+//GRAMMAR OF A PROTOCOL COMPOSITION TYPE
+
+protocol_composition_type : 'protocol' '<' protocol_identifier_list? '>' ;
+
+protocol_identifier_list : protocol_identifier (',' protocol_identifier )* ;
+
+protocol_identifier : type_identifier ;
+
+//GRAMMAR OF A METATYPE TYPE
+
+metatype_type : type '.' 'Type' | type '.' 'Protocol' ;
+
+//GRAMMAR OF A TYPE INHERITANCE CLAUSE
+
+type_inheritance_clause : ':' class_requirement ',' type_inheritance_list
+ | ':' class_requirement
+ | ':' type_inheritance_list
+;
+
+type_inheritance_list : type_identifier | type_identifier (',' type_identifier )* ;
+
+class_requirement : 'class' ;
+
 
 // ---------- Lexical Structure -----------
 
-// GRAMMAR OF AN IDENTIFIER
+binary_operator : operator ;
+//prefix_operator : MINUS | PLUS | EXCLAMATION | TILDE | postfix_operator ;
+prefix_operator : EXCLAMATION | TILDE | PLUSPLUS | MINUSMINUS ;
+postfix_operator : PLUSPLUS | MINUSMINUS ;
+
+operator : EQUALS | EXCLAMATION 
+ | LTHAN | GTHAN | EXCLAMATION | DOT 
+ | ISEQUAL | NOTEQUAL  
+ | arithmetic_operator
+ | Dot_operator_head Dot_operator_characters?
+         ;
+
+arithmetic_operator : Arithmetic_operator;
+Arithmetic_operator : Arithmetic_operator_head EQUALS? ; 
+
+fragment Arithmetic_operator_head : 
+ MOD | MINUS | PLUS | STAR | DIVIDE | AND | OR | XOR 
+ | LAND | LOR | LXOR | SLEFT | SRIGHT | IDIVIDE
+ ;
+decimal_digits : Decimal_digits ;
+
+TILDE : '~' ;
+ARROW : '->';
+AS : 'as';
+AND : '&';
+BREAK : 'break';
+CASE : 'case';
+CLASS : 'class';
+COLON : ':';
+COMMA : ',';
+CONTINUE : 'continue';
+DEFAULT : 'default';
+DIDSET : 'didSet';
+DIVIDE : '/';
+DO : 'do';
+DOT : '.';
+DOTDOT : '..';
+EQUALS : '=';
+ELSE : 'else';
+ENUM : 'enum';
+EXCLAMATION : '!';
+FALLTHROUGH : 'fallthrough';
+FOR : 'for';
+FUNC : 'func';
+GET : 'get';
+GTHAN : '>';
+IDIVIDE : '\\';
+IF : 'if';
+IMPORT : 'import';
+IN : 'in';
+IS : 'is' ;
+ISEQUAL : '==';
+LBRACE : '{';
+LBRACKET : '[';
+LET : 'let';
+LPAREN : '(';
+LTHAN : '<';
+SLEFT : '<<';
+SRIGHT : '>>';
+MINUS : '-';
+MINUSMINUS : '--';
+MOD : '%';
+NOTEQUAL : '!=';
+OR : '|';
+LAND : '&&';
+LOR : '||';
+LXOR : '^^';
+OVERRIDE : 'override';
+PLUS : '+' ;
+PLUSPLUS : '++' ;
+PUBLIC : 'public';
+PRIVATE : 'private';
+PROTOCOL : 'protocol';
+QMARK : '?';
+RBRACE : '}';
+RBRACKET : ']';
+RPAREN : ')';
+RETURN : 'return';
+SELF : 'self';
+SEMI : ';';
+SET : 'set';
+STAR : '*';
+STRUCT : 'struct';
+SUPER : 'super';
+SWITCH : 'switch';
+TYPEALIAS : 'typealias';
+VAR : 'var';
+WHERE : 'where';
+WHILE : 'while';
+WILLSET : 'willSet';
+XOR : '^' ;
 
 identifier : Identifier | context_sensitive_keyword ;
-
-keyword : 'convenience' | 'class' | 'deinit' | 'enum' | 'extension' | 'func' | 'import' | 'init' | 'let' | 'protocol' | 'static' | 'struct' | 'subscript' | 'typealias' | 'var' | 'break' | 'case' | 'continue' | 'default' | 'do' | 'else' | 'fallthrough' | 'if' | 'in' | 'for' | 'return' | 'switch' | 'where' | 'while' | 'as' | 'dynamicType' | 'is' | 'new' | 'super' | 'self' | 'Self' | 'Type' ;
-
-context_sensitive_keyword :
- 'associativity' | 'didSet' | 'get' | 'infix' | 'inout' | 'left' | 'mutating' | 'none' | 'nonmutating' | 'operator' | 'override' | 'postfix' | 'precedence' | 'prefix' | 'right' | 'set' | 'unowned' | 'unowned(safe)' | 'unowned(unsafe)' | 'weak' | 'willSet'
- ;
 
 Identifier : Identifier_head Identifier_characters?
  | '`' Identifier_head Identifier_characters? '`'
@@ -620,7 +920,51 @@ Identifier : Identifier_head Identifier_characters?
  ;
 
 identifier_list : identifier | identifier ',' identifier_list  ;
+/*
+Operator : EQUALS | IDIVIDE | MINUS | PLUS | EXCLAMATION | TIMES 
+ | MOD | LTHAN | GTHAN | AND | OR | XOR | EXCLAMATION | DOT | DIVIDE
+ | Dot_operator_head Dot_operator_characters?
+;
+*/
 
+Dot_operator_characters : Dot_operator_character+ ;
+fragment Dot_operator_character : DOT | Operator_character ;
+Dot_operator_head : DOTDOT ;
+fragment Operator_characters : Operator_character+ ;
+
+
+fragment Operator_character : Operator_head | TILDE
+/*
+ | [\u0300-\u036F]
+ | [\u1DC0-\u1DFF]
+ | [\u20D0-\u20FF]
+ | [\uFE00-\uFE0F]
+ | [\uFE20-\uFE2F]
+ //| U+E0100–U+E01EF
+*/
+;
+
+fragment Operator_head : EQUALS | IDIVIDE | MINUS | PLUS | EXCLAMATION | STAR 
+ | MOD | LTHAN | GTHAN | AND | OR | XOR | EXCLAMATION | DOT | DIVIDE
+/*
+ | [\u00A1-\u00A7]
+ | '\u00A9' | '\u00AB'
+ | '\u00AC' | '\u00AE'
+ | [\u00B0-\u00B1] | '\u00B6' | '\u00BB' | '\u00BF' | '\u00D7' | '\u00F7'
+ | [\u2016-\u2017] | [\u2020-\u2027]
+ | [\u2030-\u203E]
+ | [\u2041-\u2053]
+ | [\u2055-\u205E]
+ | [\u2190-\u23FF]
+ | [\u2500-\u2775]
+ | [\u2794-\u2BFF]
+ | [\u2E00-\u2E7F]
+ | [\u3001-\u3003]
+ | [\u3008-\u3030]
+*/
+;
+
+// lexer stuff copied from parr version
 fragment Identifier_head : [a-zA-Z]
  | '\u00A8' | '\u00AA' | '\u00AD' | '\u00AF' | [\u00B2-\u00B5] | [\u00B7-\u00BA]
  | [\u00BC-\u00BE] | [\u00C0-\u00D6] | [\u00D8-\u00F6] | [\u00F8-\u00FF]
@@ -643,7 +987,8 @@ fragment Identifier_head : [a-zA-Z]
 fragment Identifier_character : [0-9]
  | [\u0300-\u036F] | [\u1DC0-\u1DFF] | [\u20D0-\u20FF] | [\uFE20-\uFE2F]
  | Identifier_head
- ;
+;
+ 
 
 fragment Identifier_characters : Identifier_character+ ;
 
@@ -660,6 +1005,7 @@ integer_literal : Binary_literal
  | Decimal_literal
  | Hexadecimal_literal
  ;
+
 Binary_literal : '0b' Binary_digit Binary_literal_characters? ;
 fragment Binary_digit : [01] ;
 fragment Binary_literal_character : Binary_digit | '_'  ;
@@ -667,25 +1013,26 @@ fragment Binary_literal_characters : Binary_literal_character Binary_literal_cha
 Octal_literal : '0o' Octal_digit Octal_literal_characters? ;
 fragment Octal_digit : [0-7] ;
 fragment Octal_literal_character : Octal_digit | '_'  ;
-fragment Octal_literal_characters : Octal_literal_character Octal_literal_characters? ;
+fragment Octal_literal_characters : Octal_literal_character+ ;
 Decimal_literal : Decimal_digit Decimal_literal_characters? ;
 fragment Decimal_digit : [0-9] ;
-fragment Decimal_digits : Decimal_digit Decimal_digits? ;
+Decimal_digits : Decimal_digit+ ;
 fragment Decimal_literal_character : Decimal_digit | '_'  ;
-fragment Decimal_literal_characters : Decimal_literal_character Decimal_literal_characters? ;
+fragment Decimal_literal_characters : Decimal_literal_character+ ;
 Hexadecimal_literal : '0x' Hexadecimal_digit Hexadecimal_literal_characters? ;
 fragment Hexadecimal_digit : [0-9a-fA-F] ;
 fragment Hexadecimal_literal_character : Hexadecimal_digit | '_'  ;
-fragment Hexadecimal_literal_characters : Hexadecimal_literal_character Hexadecimal_literal_characters? ;
+fragment Hexadecimal_literal_characters : Hexadecimal_literal_character+ ;
 
 // GRAMMAR OF A FLOATING_POINT LITERAL
 
-Floating_point_literal : Decimal_literal Decimal_fraction? Decimal_exponent?
+Floating_point_literal
+ : Sign? Decimal_literal Decimal_fraction? Decimal_exponent?
  | Hexadecimal_literal Hexadecimal_fraction? Hexadecimal_exponent
  ;
-fragment Decimal_fraction : '.' Decimal_literal  ;
+fragment Decimal_fraction : DOT Decimal_literal  ;
 fragment Decimal_exponent : Floating_point_e Sign? Decimal_literal  ;
-fragment Hexadecimal_fraction : '.' Hexadecimal_literal? ;
+fragment Hexadecimal_fraction : DOT Hexadecimal_literal? ;
 fragment Hexadecimal_exponent : Floating_point_p Sign? Hexadecimal_literal  ;
 fragment Floating_point_e : [eE] ;
 fragment Floating_point_p : [pP] ;
@@ -693,15 +1040,27 @@ fragment Sign : [+\-] ;
 
 // GRAMMAR OF A STRING LITERAL
 
-String_literal : '"' Quoted_text '"' ;
-Quoted_text : Quoted_text_item Quoted_text? ;
-Quoted_text_item : Escaped_character
-// | '\\(' expression ')'
+//modified to handle an empty string and to allow \( to appear within quotes
+// Quoted text made optional and \( added as an escaped character with quotes
+// probably not very useful if we actually want to evaluate the expresson.
+
+String_literal : '"' Quoted_text? '"' ;
+fragment Quoted_text : Quoted_text_item Quoted_text? ;
+fragment Quoted_text_item : Escaped_character
+// | '\\(' expression RPAREN
  | ~["\\\u000A\u000D]
+ | '\\('
  ;
+
 Escaped_character : '\\' [0\\tnr"']
  | '\\x' Hexadecimal_digit Hexadecimal_digit
  | '\\u' Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit
- | '\\U' Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit
-;
+ | '\\U' Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit Hexadecimal_digit ;
+
+WS : [ \n\r\t\u000B\u000C\u0000]+ -> channel(WHITESPACE) ;
+
+Block_comment : '/*' (Block_comment|.)*? '*/' -> channel(COMMENT) ; // nesting allow
+
+Line_comment : '//' .*? '\n' -> channel(COMMENT) ;
+
 
