@@ -4,6 +4,9 @@ import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.Token;
 
 public interface SwiftListener extends ParseTreeListener {
+	void enterPrefix_expression(SwiftParser.Prefix_expressionContext ctx);
+	void exitPrefix_expression(SwiftParser.Prefix_expressionContext ctx);
+
 	void enterParenthesized_expression(SwiftParser.Parenthesized_expressionContext ctx);
 	void exitParenthesized_expression(SwiftParser.Parenthesized_expressionContext ctx);
 
@@ -13,11 +16,17 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterExpression_list(SwiftParser.Expression_listContext ctx);
 	void exitExpression_list(SwiftParser.Expression_listContext ctx);
 
+	void enterExternal_parameter_name(SwiftParser.External_parameter_nameContext ctx);
+	void exitExternal_parameter_name(SwiftParser.External_parameter_nameContext ctx);
+
 	void enterContext_sensitive_keyword(SwiftParser.Context_sensitive_keywordContext ctx);
 	void exitContext_sensitive_keyword(SwiftParser.Context_sensitive_keywordContext ctx);
 
 	void enterRaw_value_style_enum_case(SwiftParser.Raw_value_style_enum_caseContext ctx);
 	void exitRaw_value_style_enum_case(SwiftParser.Raw_value_style_enum_caseContext ctx);
+
+	void enterArithmetic_operator(SwiftParser.Arithmetic_operatorContext ctx);
+	void exitArithmetic_operator(SwiftParser.Arithmetic_operatorContext ctx);
 
 	void enterSuperclass_initializer_expression(SwiftParser.Superclass_initializer_expressionContext ctx);
 	void exitSuperclass_initializer_expression(SwiftParser.Superclass_initializer_expressionContext ctx);
@@ -43,6 +52,9 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterOperator_declaration(SwiftParser.Operator_declarationContext ctx);
 	void exitOperator_declaration(SwiftParser.Operator_declarationContext ctx);
 
+	void enterClass_requirement(SwiftParser.Class_requirementContext ctx);
+	void exitClass_requirement(SwiftParser.Class_requirementContext ctx);
+
 	void enterRequirement_clause(SwiftParser.Requirement_clauseContext ctx);
 	void exitRequirement_clause(SwiftParser.Requirement_clauseContext ctx);
 
@@ -51,6 +63,9 @@ public interface SwiftListener extends ParseTreeListener {
 
 	void enterClass_declaration(SwiftParser.Class_declarationContext ctx);
 	void exitClass_declaration(SwiftParser.Class_declarationContext ctx);
+
+	void enterInitializer_expression(SwiftParser.Initializer_expressionContext ctx);
+	void exitInitializer_expression(SwiftParser.Initializer_expressionContext ctx);
 
 	void enterWillSet_didSet_block(SwiftParser.WillSet_didSet_blockContext ctx);
 	void exitWillSet_didSet_block(SwiftParser.WillSet_didSet_blockContext ctx);
@@ -63,6 +78,9 @@ public interface SwiftListener extends ParseTreeListener {
 
 	void enterBalanced_tokens(SwiftParser.Balanced_tokensContext ctx);
 	void exitBalanced_tokens(SwiftParser.Balanced_tokensContext ctx);
+
+	void enterTop_level_declaration(SwiftParser.Top_level_declarationContext ctx);
+	void exitTop_level_declaration(SwiftParser.Top_level_declarationContext ctx);
 
 	void enterExtension_body(SwiftParser.Extension_bodyContext ctx);
 	void exitExtension_body(SwiftParser.Extension_bodyContext ctx);
@@ -106,20 +124,26 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterAssociativity_clause(SwiftParser.Associativity_clauseContext ctx);
 	void exitAssociativity_clause(SwiftParser.Associativity_clauseContext ctx);
 
+	void enterDeclaration_modifiers(SwiftParser.Declaration_modifiersContext ctx);
+	void exitDeclaration_modifiers(SwiftParser.Declaration_modifiersContext ctx);
+
 	void enterGeneric_parameter_list(SwiftParser.Generic_parameter_listContext ctx);
 	void exitGeneric_parameter_list(SwiftParser.Generic_parameter_listContext ctx);
 
-	void enterDeclaration_specifiers(SwiftParser.Declaration_specifiersContext ctx);
-	void exitDeclaration_specifiers(SwiftParser.Declaration_specifiersContext ctx);
+	void enterPostfix_expression(SwiftParser.Postfix_expressionContext ctx);
+	void exitPostfix_expression(SwiftParser.Postfix_expressionContext ctx);
 
 	void enterTypealias_name(SwiftParser.Typealias_nameContext ctx);
 	void exitTypealias_name(SwiftParser.Typealias_nameContext ctx);
 
+	void enterType_annotation(SwiftParser.Type_annotationContext ctx);
+	void exitType_annotation(SwiftParser.Type_annotationContext ctx);
+
 	void enterSubscript_head(SwiftParser.Subscript_headContext ctx);
 	void exitSubscript_head(SwiftParser.Subscript_headContext ctx);
 
-	void enterType_annotation(SwiftParser.Type_annotationContext ctx);
-	void exitType_annotation(SwiftParser.Type_annotationContext ctx);
+	void enterBinary_expression(SwiftParser.Binary_expressionContext ctx);
+	void exitBinary_expression(SwiftParser.Binary_expressionContext ctx);
 
 	void enterDefault_argument_clause(SwiftParser.Default_argument_clauseContext ctx);
 	void exitDefault_argument_clause(SwiftParser.Default_argument_clauseContext ctx);
@@ -151,11 +175,23 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterTop_level(SwiftParser.Top_levelContext ctx);
 	void exitTop_level(SwiftParser.Top_levelContext ctx);
 
+	void enterFunction_call_expression(SwiftParser.Function_call_expressionContext ctx);
+	void exitFunction_call_expression(SwiftParser.Function_call_expressionContext ctx);
+
+	void enterOperator(SwiftParser.OperatorContext ctx);
+	void exitOperator(SwiftParser.OperatorContext ctx);
+
+	void enterPostfix_self_expression(SwiftParser.Postfix_self_expressionContext ctx);
+	void exitPostfix_self_expression(SwiftParser.Postfix_self_expressionContext ctx);
+
 	void enterAttribute_name(SwiftParser.Attribute_nameContext ctx);
 	void exitAttribute_name(SwiftParser.Attribute_nameContext ctx);
 
 	void enterWhile_condition(SwiftParser.While_conditionContext ctx);
 	void exitWhile_condition(SwiftParser.While_conditionContext ctx);
+
+	void enterBinary_expressions(SwiftParser.Binary_expressionsContext ctx);
+	void exitBinary_expressions(SwiftParser.Binary_expressionsContext ctx);
 
 	void enterType_inheritance_list(SwiftParser.Type_inheritance_listContext ctx);
 	void exitType_inheritance_list(SwiftParser.Type_inheritance_listContext ctx);
@@ -177,6 +213,9 @@ public interface SwiftListener extends ParseTreeListener {
 
 	void enterExpression_element_list(SwiftParser.Expression_element_listContext ctx);
 	void exitExpression_element_list(SwiftParser.Expression_element_listContext ctx);
+
+	void enterAccess_level_modifiers(SwiftParser.Access_level_modifiersContext ctx);
+	void exitAccess_level_modifiers(SwiftParser.Access_level_modifiersContext ctx);
 
 	void enterSuperclass_expression(SwiftParser.Superclass_expressionContext ctx);
 	void exitSuperclass_expression(SwiftParser.Superclass_expressionContext ctx);
@@ -228,9 +267,6 @@ public interface SwiftListener extends ParseTreeListener {
 
 	void enterFunction_name(SwiftParser.Function_nameContext ctx);
 	void exitFunction_name(SwiftParser.Function_nameContext ctx);
-
-	void enterParameter_name(SwiftParser.Parameter_nameContext ctx);
-	void exitParameter_name(SwiftParser.Parameter_nameContext ctx);
 
 	void enterAs_pattern(SwiftParser.As_patternContext ctx);
 	void exitAs_pattern(SwiftParser.As_patternContext ctx);
@@ -300,6 +336,9 @@ public interface SwiftListener extends ParseTreeListener {
 
 	void enterType_inheritance_clause(SwiftParser.Type_inheritance_clauseContext ctx);
 	void exitType_inheritance_clause(SwiftParser.Type_inheritance_clauseContext ctx);
+
+	void enterSubscript_expression(SwiftParser.Subscript_expressionContext ctx);
+	void exitSubscript_expression(SwiftParser.Subscript_expressionContext ctx);
 
 	void enterArray_type(SwiftParser.Array_typeContext ctx);
 	void exitArray_type(SwiftParser.Array_typeContext ctx);
@@ -376,9 +415,6 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterEnum_case_pattern(SwiftParser.Enum_case_patternContext ctx);
 	void exitEnum_case_pattern(SwiftParser.Enum_case_patternContext ctx);
 
-	void enterDeclaration_specifier(SwiftParser.Declaration_specifierContext ctx);
-	void exitDeclaration_specifier(SwiftParser.Declaration_specifierContext ctx);
-
 	void enterRequirement_list(SwiftParser.Requirement_listContext ctx);
 	void exitRequirement_list(SwiftParser.Requirement_listContext ctx);
 
@@ -402,6 +438,9 @@ public interface SwiftListener extends ParseTreeListener {
 
 	void enterBranch_statement(SwiftParser.Branch_statementContext ctx);
 	void exitBranch_statement(SwiftParser.Branch_statementContext ctx);
+
+	void enterOptional_chaining_expression(SwiftParser.Optional_chaining_expressionContext ctx);
+	void exitOptional_chaining_expression(SwiftParser.Optional_chaining_expressionContext ctx);
 
 	void enterType_casting_operator(SwiftParser.Type_casting_operatorContext ctx);
 	void exitType_casting_operator(SwiftParser.Type_casting_operatorContext ctx);
@@ -469,6 +508,9 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterGetter_setter_block(SwiftParser.Getter_setter_blockContext ctx);
 	void exitGetter_setter_block(SwiftParser.Getter_setter_blockContext ctx);
 
+	void enterDeclaration_modifier(SwiftParser.Declaration_modifierContext ctx);
+	void exitDeclaration_modifier(SwiftParser.Declaration_modifierContext ctx);
+
 	void enterArray_literal_item(SwiftParser.Array_literal_itemContext ctx);
 	void exitArray_literal_item(SwiftParser.Array_literal_itemContext ctx);
 
@@ -496,23 +538,29 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterInitializer(SwiftParser.InitializerContext ctx);
 	void exitInitializer(SwiftParser.InitializerContext ctx);
 
-	void enterCode_block(SwiftParser.Code_blockContext ctx);
-	void exitCode_block(SwiftParser.Code_blockContext ctx);
-
 	void enterType(SwiftParser.TypeContext ctx);
 	void exitType(SwiftParser.TypeContext ctx);
 
-	void enterStatement_label(SwiftParser.Statement_labelContext ctx);
-	void exitStatement_label(SwiftParser.Statement_labelContext ctx);
+	void enterCode_block(SwiftParser.Code_blockContext ctx);
+	void exitCode_block(SwiftParser.Code_blockContext ctx);
 
 	void enterTuple_type_element_list(SwiftParser.Tuple_type_element_listContext ctx);
 	void exitTuple_type_element_list(SwiftParser.Tuple_type_element_listContext ctx);
 
+	void enterStatement_label(SwiftParser.Statement_labelContext ctx);
+	void exitStatement_label(SwiftParser.Statement_labelContext ctx);
+
 	void enterDictionary_literal(SwiftParser.Dictionary_literalContext ctx);
 	void exitDictionary_literal(SwiftParser.Dictionary_literalContext ctx);
 
+	void enterDynamic_type_expression(SwiftParser.Dynamic_type_expressionContext ctx);
+	void exitDynamic_type_expression(SwiftParser.Dynamic_type_expressionContext ctx);
+
 	void enterGetter_setter_keyword_block(SwiftParser.Getter_setter_keyword_blockContext ctx);
 	void exitGetter_setter_keyword_block(SwiftParser.Getter_setter_keyword_blockContext ctx);
+
+	void enterAccess_level_modifier(SwiftParser.Access_level_modifierContext ctx);
+	void exitAccess_level_modifier(SwiftParser.Access_level_modifierContext ctx);
 
 	void enterTuple_pattern(SwiftParser.Tuple_patternContext ctx);
 	void exitTuple_pattern(SwiftParser.Tuple_patternContext ctx);
@@ -550,6 +598,9 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterInitializer_head(SwiftParser.Initializer_headContext ctx);
 	void exitInitializer_head(SwiftParser.Initializer_headContext ctx);
 
+	void enterForced_value_expression(SwiftParser.Forced_value_expressionContext ctx);
+	void exitForced_value_expression(SwiftParser.Forced_value_expressionContext ctx);
+
 	void enterUnion_style_enum_case_list(SwiftParser.Union_style_enum_case_listContext ctx);
 	void exitUnion_style_enum_case_list(SwiftParser.Union_style_enum_case_listContext ctx);
 
@@ -571,8 +622,14 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterInfix_operator_declaration(SwiftParser.Infix_operator_declarationContext ctx);
 	void exitInfix_operator_declaration(SwiftParser.Infix_operator_declarationContext ctx);
 
+	void enterDictionary_type(SwiftParser.Dictionary_typeContext ctx);
+	void exitDictionary_type(SwiftParser.Dictionary_typeContext ctx);
+
 	void enterParameter(SwiftParser.ParameterContext ctx);
 	void exitParameter(SwiftParser.ParameterContext ctx);
+
+	void enterExplicit_member_expression(SwiftParser.Explicit_member_expressionContext ctx);
+	void exitExplicit_member_expression(SwiftParser.Explicit_member_expressionContext ctx);
 
 	void enterAssignment_operator(SwiftParser.Assignment_operatorContext ctx);
 	void exitAssignment_operator(SwiftParser.Assignment_operatorContext ctx);
@@ -601,9 +658,6 @@ public interface SwiftListener extends ParseTreeListener {
 	void enterCapture_specifier(SwiftParser.Capture_specifierContext ctx);
 	void exitCapture_specifier(SwiftParser.Capture_specifierContext ctx);
 
-	void enterKeyword(SwiftParser.KeywordContext ctx);
-	void exitKeyword(SwiftParser.KeywordContext ctx);
-
 	void enterClosure_expression(SwiftParser.Closure_expressionContext ctx);
 	void exitClosure_expression(SwiftParser.Closure_expressionContext ctx);
 
@@ -618,6 +672,9 @@ public interface SwiftListener extends ParseTreeListener {
 
 	void enterRaw_value_style_enum_members(SwiftParser.Raw_value_style_enum_membersContext ctx);
 	void exitRaw_value_style_enum_members(SwiftParser.Raw_value_style_enum_membersContext ctx);
+
+	void enterDecimal_digits(SwiftParser.Decimal_digitsContext ctx);
+	void exitDecimal_digits(SwiftParser.Decimal_digitsContext ctx);
 
 	void enterFunction_result(SwiftParser.Function_resultContext ctx);
 	void exitFunction_result(SwiftParser.Function_resultContext ctx);

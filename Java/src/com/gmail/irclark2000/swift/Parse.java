@@ -13,38 +13,27 @@ import com.gmail.irclark2000.swift.parser.SwiftLexer;
 import com.gmail.irclark2000.swift.parser.SwiftParser;
 
 public class Parse {
-	private static final String FILENAME = "examples/AppConfiguration.swift";
+	private static final String FILENAME = "examples/call.swift";
 
 	/**
 	 * @param args
+	 * @throws IOException
+	 * @throws FileNotFoundException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException,
+			FileNotFoundException {
 		BufferedInputStream instream = null;
-		try {
-			instream = new BufferedInputStream(new FileInputStream(
-					FILENAME));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		ANTLRInputStream antlrStream = null;
-		try {
-			antlrStream = new ANTLRInputStream(instream);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		SwiftParser.Top_levelContext tree = new SwiftParser(
-				new CommonTokenStream(new SwiftLexer(antlrStream)))
+		instream = new BufferedInputStream(new FileInputStream(FILENAME));
+		antlrStream = new ANTLRInputStream(instream);
+
+		CommonTokenStream tokenStream = new CommonTokenStream(new SwiftLexer(
+				antlrStream));
+		SwiftParser.Top_levelContext tree = new SwiftParser(tokenStream)
 				.top_level();
 		// walk the tree and activate so we can listen
 		ParseTreeWalker walker = new ParseTreeWalker();
-		walker.walk(new SwiftTranslatorListener(), tree);
-		try {
-			instream.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		walker.walk(new SwiftTranslatorListener(tokenStream), tree);
+		instream.close();
 	}
 }

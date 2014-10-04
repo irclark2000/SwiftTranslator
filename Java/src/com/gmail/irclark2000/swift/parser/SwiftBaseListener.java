@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.ErrorNode;
 
 public class SwiftBaseListener implements SwiftListener {
+	@Override public void enterPrefix_expression(SwiftParser.Prefix_expressionContext ctx) { }
+	@Override public void exitPrefix_expression(SwiftParser.Prefix_expressionContext ctx) { }
+
 	@Override public void enterParenthesized_expression(SwiftParser.Parenthesized_expressionContext ctx) { }
 	@Override public void exitParenthesized_expression(SwiftParser.Parenthesized_expressionContext ctx) { }
 
@@ -16,11 +19,17 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterExpression_list(SwiftParser.Expression_listContext ctx) { }
 	@Override public void exitExpression_list(SwiftParser.Expression_listContext ctx) { }
 
+	@Override public void enterExternal_parameter_name(SwiftParser.External_parameter_nameContext ctx) { }
+	@Override public void exitExternal_parameter_name(SwiftParser.External_parameter_nameContext ctx) { }
+
 	@Override public void enterContext_sensitive_keyword(SwiftParser.Context_sensitive_keywordContext ctx) { }
 	@Override public void exitContext_sensitive_keyword(SwiftParser.Context_sensitive_keywordContext ctx) { }
 
 	@Override public void enterRaw_value_style_enum_case(SwiftParser.Raw_value_style_enum_caseContext ctx) { }
 	@Override public void exitRaw_value_style_enum_case(SwiftParser.Raw_value_style_enum_caseContext ctx) { }
+
+	@Override public void enterArithmetic_operator(SwiftParser.Arithmetic_operatorContext ctx) { }
+	@Override public void exitArithmetic_operator(SwiftParser.Arithmetic_operatorContext ctx) { }
 
 	@Override public void enterSuperclass_initializer_expression(SwiftParser.Superclass_initializer_expressionContext ctx) { }
 	@Override public void exitSuperclass_initializer_expression(SwiftParser.Superclass_initializer_expressionContext ctx) { }
@@ -46,6 +55,9 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterOperator_declaration(SwiftParser.Operator_declarationContext ctx) { }
 	@Override public void exitOperator_declaration(SwiftParser.Operator_declarationContext ctx) { }
 
+	@Override public void enterClass_requirement(SwiftParser.Class_requirementContext ctx) { }
+	@Override public void exitClass_requirement(SwiftParser.Class_requirementContext ctx) { }
+
 	@Override public void enterRequirement_clause(SwiftParser.Requirement_clauseContext ctx) { }
 	@Override public void exitRequirement_clause(SwiftParser.Requirement_clauseContext ctx) { }
 
@@ -54,6 +66,9 @@ public class SwiftBaseListener implements SwiftListener {
 
 	@Override public void enterClass_declaration(SwiftParser.Class_declarationContext ctx) { }
 	@Override public void exitClass_declaration(SwiftParser.Class_declarationContext ctx) { }
+
+	@Override public void enterInitializer_expression(SwiftParser.Initializer_expressionContext ctx) { }
+	@Override public void exitInitializer_expression(SwiftParser.Initializer_expressionContext ctx) { }
 
 	@Override public void enterWillSet_didSet_block(SwiftParser.WillSet_didSet_blockContext ctx) { }
 	@Override public void exitWillSet_didSet_block(SwiftParser.WillSet_didSet_blockContext ctx) { }
@@ -66,6 +81,9 @@ public class SwiftBaseListener implements SwiftListener {
 
 	@Override public void enterBalanced_tokens(SwiftParser.Balanced_tokensContext ctx) { }
 	@Override public void exitBalanced_tokens(SwiftParser.Balanced_tokensContext ctx) { }
+
+	@Override public void enterTop_level_declaration(SwiftParser.Top_level_declarationContext ctx) { }
+	@Override public void exitTop_level_declaration(SwiftParser.Top_level_declarationContext ctx) { }
 
 	@Override public void enterExtension_body(SwiftParser.Extension_bodyContext ctx) { }
 	@Override public void exitExtension_body(SwiftParser.Extension_bodyContext ctx) { }
@@ -109,20 +127,26 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterAssociativity_clause(SwiftParser.Associativity_clauseContext ctx) { }
 	@Override public void exitAssociativity_clause(SwiftParser.Associativity_clauseContext ctx) { }
 
+	@Override public void enterDeclaration_modifiers(SwiftParser.Declaration_modifiersContext ctx) { }
+	@Override public void exitDeclaration_modifiers(SwiftParser.Declaration_modifiersContext ctx) { }
+
 	@Override public void enterGeneric_parameter_list(SwiftParser.Generic_parameter_listContext ctx) { }
 	@Override public void exitGeneric_parameter_list(SwiftParser.Generic_parameter_listContext ctx) { }
 
-	@Override public void enterDeclaration_specifiers(SwiftParser.Declaration_specifiersContext ctx) { }
-	@Override public void exitDeclaration_specifiers(SwiftParser.Declaration_specifiersContext ctx) { }
+	@Override public void enterPostfix_expression(SwiftParser.Postfix_expressionContext ctx) { }
+	@Override public void exitPostfix_expression(SwiftParser.Postfix_expressionContext ctx) { }
 
 	@Override public void enterTypealias_name(SwiftParser.Typealias_nameContext ctx) { }
 	@Override public void exitTypealias_name(SwiftParser.Typealias_nameContext ctx) { }
 
+	@Override public void enterType_annotation(SwiftParser.Type_annotationContext ctx) { }
+	@Override public void exitType_annotation(SwiftParser.Type_annotationContext ctx) { }
+
 	@Override public void enterSubscript_head(SwiftParser.Subscript_headContext ctx) { }
 	@Override public void exitSubscript_head(SwiftParser.Subscript_headContext ctx) { }
 
-	@Override public void enterType_annotation(SwiftParser.Type_annotationContext ctx) { }
-	@Override public void exitType_annotation(SwiftParser.Type_annotationContext ctx) { }
+	@Override public void enterBinary_expression(SwiftParser.Binary_expressionContext ctx) { }
+	@Override public void exitBinary_expression(SwiftParser.Binary_expressionContext ctx) { }
 
 	@Override public void enterDefault_argument_clause(SwiftParser.Default_argument_clauseContext ctx) { }
 	@Override public void exitDefault_argument_clause(SwiftParser.Default_argument_clauseContext ctx) { }
@@ -154,11 +178,23 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterTop_level(SwiftParser.Top_levelContext ctx) { }
 	@Override public void exitTop_level(SwiftParser.Top_levelContext ctx) { }
 
+	@Override public void enterFunction_call_expression(SwiftParser.Function_call_expressionContext ctx) { }
+	@Override public void exitFunction_call_expression(SwiftParser.Function_call_expressionContext ctx) { }
+
+	@Override public void enterOperator(SwiftParser.OperatorContext ctx) { }
+	@Override public void exitOperator(SwiftParser.OperatorContext ctx) { }
+
+	@Override public void enterPostfix_self_expression(SwiftParser.Postfix_self_expressionContext ctx) { }
+	@Override public void exitPostfix_self_expression(SwiftParser.Postfix_self_expressionContext ctx) { }
+
 	@Override public void enterAttribute_name(SwiftParser.Attribute_nameContext ctx) { }
 	@Override public void exitAttribute_name(SwiftParser.Attribute_nameContext ctx) { }
 
 	@Override public void enterWhile_condition(SwiftParser.While_conditionContext ctx) { }
 	@Override public void exitWhile_condition(SwiftParser.While_conditionContext ctx) { }
+
+	@Override public void enterBinary_expressions(SwiftParser.Binary_expressionsContext ctx) { }
+	@Override public void exitBinary_expressions(SwiftParser.Binary_expressionsContext ctx) { }
 
 	@Override public void enterType_inheritance_list(SwiftParser.Type_inheritance_listContext ctx) { }
 	@Override public void exitType_inheritance_list(SwiftParser.Type_inheritance_listContext ctx) { }
@@ -180,6 +216,9 @@ public class SwiftBaseListener implements SwiftListener {
 
 	@Override public void enterExpression_element_list(SwiftParser.Expression_element_listContext ctx) { }
 	@Override public void exitExpression_element_list(SwiftParser.Expression_element_listContext ctx) { }
+
+	@Override public void enterAccess_level_modifiers(SwiftParser.Access_level_modifiersContext ctx) { }
+	@Override public void exitAccess_level_modifiers(SwiftParser.Access_level_modifiersContext ctx) { }
 
 	@Override public void enterSuperclass_expression(SwiftParser.Superclass_expressionContext ctx) { }
 	@Override public void exitSuperclass_expression(SwiftParser.Superclass_expressionContext ctx) { }
@@ -231,9 +270,6 @@ public class SwiftBaseListener implements SwiftListener {
 
 	@Override public void enterFunction_name(SwiftParser.Function_nameContext ctx) { }
 	@Override public void exitFunction_name(SwiftParser.Function_nameContext ctx) { }
-
-	@Override public void enterParameter_name(SwiftParser.Parameter_nameContext ctx) { }
-	@Override public void exitParameter_name(SwiftParser.Parameter_nameContext ctx) { }
 
 	@Override public void enterAs_pattern(SwiftParser.As_patternContext ctx) { }
 	@Override public void exitAs_pattern(SwiftParser.As_patternContext ctx) { }
@@ -303,6 +339,9 @@ public class SwiftBaseListener implements SwiftListener {
 
 	@Override public void enterType_inheritance_clause(SwiftParser.Type_inheritance_clauseContext ctx) { }
 	@Override public void exitType_inheritance_clause(SwiftParser.Type_inheritance_clauseContext ctx) { }
+
+	@Override public void enterSubscript_expression(SwiftParser.Subscript_expressionContext ctx) { }
+	@Override public void exitSubscript_expression(SwiftParser.Subscript_expressionContext ctx) { }
 
 	@Override public void enterArray_type(SwiftParser.Array_typeContext ctx) { }
 	@Override public void exitArray_type(SwiftParser.Array_typeContext ctx) { }
@@ -379,9 +418,6 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterEnum_case_pattern(SwiftParser.Enum_case_patternContext ctx) { }
 	@Override public void exitEnum_case_pattern(SwiftParser.Enum_case_patternContext ctx) { }
 
-	@Override public void enterDeclaration_specifier(SwiftParser.Declaration_specifierContext ctx) { }
-	@Override public void exitDeclaration_specifier(SwiftParser.Declaration_specifierContext ctx) { }
-
 	@Override public void enterRequirement_list(SwiftParser.Requirement_listContext ctx) { }
 	@Override public void exitRequirement_list(SwiftParser.Requirement_listContext ctx) { }
 
@@ -405,6 +441,9 @@ public class SwiftBaseListener implements SwiftListener {
 
 	@Override public void enterBranch_statement(SwiftParser.Branch_statementContext ctx) { }
 	@Override public void exitBranch_statement(SwiftParser.Branch_statementContext ctx) { }
+
+	@Override public void enterOptional_chaining_expression(SwiftParser.Optional_chaining_expressionContext ctx) { }
+	@Override public void exitOptional_chaining_expression(SwiftParser.Optional_chaining_expressionContext ctx) { }
 
 	@Override public void enterType_casting_operator(SwiftParser.Type_casting_operatorContext ctx) { }
 	@Override public void exitType_casting_operator(SwiftParser.Type_casting_operatorContext ctx) { }
@@ -472,6 +511,9 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterGetter_setter_block(SwiftParser.Getter_setter_blockContext ctx) { }
 	@Override public void exitGetter_setter_block(SwiftParser.Getter_setter_blockContext ctx) { }
 
+	@Override public void enterDeclaration_modifier(SwiftParser.Declaration_modifierContext ctx) { }
+	@Override public void exitDeclaration_modifier(SwiftParser.Declaration_modifierContext ctx) { }
+
 	@Override public void enterArray_literal_item(SwiftParser.Array_literal_itemContext ctx) { }
 	@Override public void exitArray_literal_item(SwiftParser.Array_literal_itemContext ctx) { }
 
@@ -499,23 +541,29 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterInitializer(SwiftParser.InitializerContext ctx) { }
 	@Override public void exitInitializer(SwiftParser.InitializerContext ctx) { }
 
-	@Override public void enterCode_block(SwiftParser.Code_blockContext ctx) { }
-	@Override public void exitCode_block(SwiftParser.Code_blockContext ctx) { }
-
 	@Override public void enterType(SwiftParser.TypeContext ctx) { }
 	@Override public void exitType(SwiftParser.TypeContext ctx) { }
 
-	@Override public void enterStatement_label(SwiftParser.Statement_labelContext ctx) { }
-	@Override public void exitStatement_label(SwiftParser.Statement_labelContext ctx) { }
+	@Override public void enterCode_block(SwiftParser.Code_blockContext ctx) { }
+	@Override public void exitCode_block(SwiftParser.Code_blockContext ctx) { }
 
 	@Override public void enterTuple_type_element_list(SwiftParser.Tuple_type_element_listContext ctx) { }
 	@Override public void exitTuple_type_element_list(SwiftParser.Tuple_type_element_listContext ctx) { }
 
+	@Override public void enterStatement_label(SwiftParser.Statement_labelContext ctx) { }
+	@Override public void exitStatement_label(SwiftParser.Statement_labelContext ctx) { }
+
 	@Override public void enterDictionary_literal(SwiftParser.Dictionary_literalContext ctx) { }
 	@Override public void exitDictionary_literal(SwiftParser.Dictionary_literalContext ctx) { }
 
+	@Override public void enterDynamic_type_expression(SwiftParser.Dynamic_type_expressionContext ctx) { }
+	@Override public void exitDynamic_type_expression(SwiftParser.Dynamic_type_expressionContext ctx) { }
+
 	@Override public void enterGetter_setter_keyword_block(SwiftParser.Getter_setter_keyword_blockContext ctx) { }
 	@Override public void exitGetter_setter_keyword_block(SwiftParser.Getter_setter_keyword_blockContext ctx) { }
+
+	@Override public void enterAccess_level_modifier(SwiftParser.Access_level_modifierContext ctx) { }
+	@Override public void exitAccess_level_modifier(SwiftParser.Access_level_modifierContext ctx) { }
 
 	@Override public void enterTuple_pattern(SwiftParser.Tuple_patternContext ctx) { }
 	@Override public void exitTuple_pattern(SwiftParser.Tuple_patternContext ctx) { }
@@ -553,6 +601,9 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterInitializer_head(SwiftParser.Initializer_headContext ctx) { }
 	@Override public void exitInitializer_head(SwiftParser.Initializer_headContext ctx) { }
 
+	@Override public void enterForced_value_expression(SwiftParser.Forced_value_expressionContext ctx) { }
+	@Override public void exitForced_value_expression(SwiftParser.Forced_value_expressionContext ctx) { }
+
 	@Override public void enterUnion_style_enum_case_list(SwiftParser.Union_style_enum_case_listContext ctx) { }
 	@Override public void exitUnion_style_enum_case_list(SwiftParser.Union_style_enum_case_listContext ctx) { }
 
@@ -574,8 +625,14 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterInfix_operator_declaration(SwiftParser.Infix_operator_declarationContext ctx) { }
 	@Override public void exitInfix_operator_declaration(SwiftParser.Infix_operator_declarationContext ctx) { }
 
+	@Override public void enterDictionary_type(SwiftParser.Dictionary_typeContext ctx) { }
+	@Override public void exitDictionary_type(SwiftParser.Dictionary_typeContext ctx) { }
+
 	@Override public void enterParameter(SwiftParser.ParameterContext ctx) { }
 	@Override public void exitParameter(SwiftParser.ParameterContext ctx) { }
+
+	@Override public void enterExplicit_member_expression(SwiftParser.Explicit_member_expressionContext ctx) { }
+	@Override public void exitExplicit_member_expression(SwiftParser.Explicit_member_expressionContext ctx) { }
 
 	@Override public void enterAssignment_operator(SwiftParser.Assignment_operatorContext ctx) { }
 	@Override public void exitAssignment_operator(SwiftParser.Assignment_operatorContext ctx) { }
@@ -604,9 +661,6 @@ public class SwiftBaseListener implements SwiftListener {
 	@Override public void enterCapture_specifier(SwiftParser.Capture_specifierContext ctx) { }
 	@Override public void exitCapture_specifier(SwiftParser.Capture_specifierContext ctx) { }
 
-	@Override public void enterKeyword(SwiftParser.KeywordContext ctx) { }
-	@Override public void exitKeyword(SwiftParser.KeywordContext ctx) { }
-
 	@Override public void enterClosure_expression(SwiftParser.Closure_expressionContext ctx) { }
 	@Override public void exitClosure_expression(SwiftParser.Closure_expressionContext ctx) { }
 
@@ -621,6 +675,9 @@ public class SwiftBaseListener implements SwiftListener {
 
 	@Override public void enterRaw_value_style_enum_members(SwiftParser.Raw_value_style_enum_membersContext ctx) { }
 	@Override public void exitRaw_value_style_enum_members(SwiftParser.Raw_value_style_enum_membersContext ctx) { }
+
+	@Override public void enterDecimal_digits(SwiftParser.Decimal_digitsContext ctx) { }
+	@Override public void exitDecimal_digits(SwiftParser.Decimal_digitsContext ctx) { }
 
 	@Override public void enterFunction_result(SwiftParser.Function_resultContext ctx) { }
 	@Override public void exitFunction_result(SwiftParser.Function_resultContext ctx) { }
