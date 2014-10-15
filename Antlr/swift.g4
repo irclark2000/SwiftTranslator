@@ -113,11 +113,11 @@ switch_case : case_label statements | default_label statements
  | case_label ';' | default_label ';'
 ;
 
-case_label : 'case' case_item_list ':' ;
+case_label : 'case' case_item_list COLON ;
 
 case_item_list : pattern guard_clause? (',' pattern guard_clause? )* ;
 
-default_label : 'default' ':' ;
+default_label : DEFAULT COLON ;
 
 guard_clause : 'where' guard_expression ;
 
@@ -128,7 +128,7 @@ guard_expression : expression
 
 labeled_statement : statement_label loop_statement | statement_label switch_statement ;
 
-statement_label : label_name ':' ;
+statement_label : label_name COLON ;
 
 label_name : identifier ;
 
@@ -146,7 +146,7 @@ break_statement : 'break' label_name?  ;
 
 //GRAMMAR OF A CONTINUE STATEMENT
 
-continue_statement : 'continue' label_name?  ;
+continue_statement : CONTINUE label_name?  ;
 
 //GRAMMAR OF A FALLTHROUGH STATEMENT
 
@@ -166,8 +166,8 @@ generic_parameter_list : generic_parameter (',' generic_parameter )*
 ;
 
 generic_parameter : type_name
- | type_name ':' type_identifier
- | type_name ':' protocol_composition_type
+ | type_name COLON type_identifier
+ | type_name COLON protocol_composition_type
 ;
 
 requirement_clause : 'where' requirement_list ;
@@ -177,8 +177,8 @@ requirement_list : requirement (',' requirement )* ;
 requirement : conformance_requirement | same_type_requirement
 ;
 
-conformance_requirement : type_identifier ':' type_identifier
- | type_identifier ':' protocol_composition_type ;
+conformance_requirement : type_identifier COLON type_identifier
+ | type_identifier COLON protocol_composition_type ;
 
 same_type_requirement : type_identifier ('==' | '!=') type_identifier ;
 
@@ -224,7 +224,7 @@ code_block : '{' statements? '}' ;
 
 import_declaration : attributes? 'import' import_kind? import_path ;
 
-import_kind : 'typealias' | 'struct' | 'class' | 'enum' | 'protocol' | 'var' | 'func' ;
+import_kind : 'typealias' | STRUCT | CLASS | 'enum' | 'protocol' | VAR | 'func' ;
 
 import_path : import_path_identifier | import_path_identifier '.' import_path ;
 
@@ -232,7 +232,7 @@ import_path_identifier : identifier | operator ;
 
 //GRAMMAR OF A CONSTANT DECLARATION
 
-constant_declaration : attributes? declaration_modifiers? 'let' pattern_initializer_list ;
+constant_declaration : attributes? declaration_modifiers? LET pattern_initializer_list ;
 
 pattern_initializer_list : pattern_initializer (',' pattern_initializer )* ;
 
@@ -249,7 +249,7 @@ variable_declaration : variable_declaration_head pattern_initializer_list
  | variable_declaration_head variable_name type_annotation initializer? willSet_didSet_block
 ;
 
-variable_declaration_head : attributes? declaration_modifiers? 'var' ;
+variable_declaration_head : attributes? declaration_modifiers? VAR ;
 
 variable_name : identifier ;
 
@@ -304,14 +304,14 @@ function_result : '->' attributes? type ;
 
 function_body : code_block ;
 
-parameter_clauses : parameter_clause parameter_clauses?  ;
+parameter_clauses : parameter_clause+  ;
 
-parameter_clause : '(' ')' | '(' parameter_list '...'? ')' ;
+parameter_clause : '(' ')' | '(' parameter_list DOTDOTDOT? ')' ;
 
 parameter_list : parameter ( ',' parameter )* ;
 
-parameter : 'inout'? 'let'? '#'? external_parameter_name? local_parameter_name type_annotation default_argument_clause?
- | 'inout'? 'var' '#'? external_parameter_name? local_parameter_name type_annotation default_argument_clause?
+parameter : INOUT? LET? POUND? external_parameter_name? local_parameter_name type_annotation default_argument_clause?
+ | INOUT? VAR POUND? external_parameter_name? local_parameter_name type_annotation default_argument_clause?
  | attributes? type
 ;
 
@@ -364,7 +364,7 @@ raw_value_assignment : '=' literal ;
 
 //GRAMMAR OF A STRUCTURE DECLARATION
 
-struct_declaration : attributes? access_level_modifier? 'struct' struct_name generic_parameter_clause? type_inheritance_clause? struct_body ;
+struct_declaration : attributes? access_level_modifier? STRUCT struct_name generic_parameter_clause? type_inheritance_clause? struct_body ;
 
 struct_name : identifier ;
 
@@ -372,7 +372,7 @@ struct_body : '{' declarations? '}' ;
 
 //GRAMMAR OF A CLASS DECLARATION
 
-class_declaration : attributes? access_level_modifier? 'class' class_name generic_parameter_clause? type_inheritance_clause? class_body ;
+class_declaration : attributes? access_level_modifier? CLASS class_name generic_parameter_clause? type_inheritance_clause? class_body ;
 
 class_name : identifier ;
 
@@ -458,15 +458,15 @@ associativity : 'left' | 'right' | 'none' ;
 
 //GRAMMAR OF A DECLARATION MODIFIER
 
-declaration_modifier : 'class' | 'convenience' | 'dynamic' | 'final' | 'infix' | 'lazy' | 'mutating' | 'nonmutating' | '?' 'ional' | 'override' | 'postfix' | 'prefix' | 'required' | 'static' | 'unowned' | 'unowned' '(' 'safe' ')' | 'unowned' '(' 'unsafe' ')' | 'weak'
+declaration_modifier : CLASS | 'convenience' | 'dynamic' | 'final' | 'infix' | 'lazy' | 'mutating' | 'nonmutating' | '?' 'ional' | 'override' | 'postfix' | 'prefix' | 'required' | 'static' | 'unowned' | 'unowned' '(' 'safe' ')' | 'unowned' '(' 'unsafe' ')' | 'weak'
  | access_level_modifier
 ;
 
-declaration_modifiers : declaration_modifier declaration_modifiers?  ;
+declaration_modifiers : declaration_modifier+ ;
 
 access_level_modifier : 'internal' | 'internal' '(' 'set' ')'
- | 'private' | 'private' '(' 'set' ')'
- | 'public' | 'public' '(' 'set' ')'
+ | PRIVATE | PRIVATE '(' 'set' ')'
+ | PUBLIC | PUBLIC '(' 'set' ')'
 ;
 
 access_level_modifiers : access_level_modifier+ ;
@@ -480,7 +480,7 @@ pattern : wildcard_pattern type_annotation?
  | tuple_pattern type_annotation?
  | enum_case_pattern
  //| type_casting_pattern
- | 'is' type | pattern 'as' type
+ | IS type | pattern AS type
  | expression_pattern
 ;
 
@@ -494,7 +494,7 @@ identifier_pattern : identifier ;
 
 //GRAMMAR OF A VALUE-BINDING PATTERN
 
-value_binding_pattern : 'var' pattern | 'let' pattern ;
+value_binding_pattern : VAR pattern | LET pattern ;
 
 //GRAMMAR OF A TUPLE PATTERN
 
@@ -510,11 +510,11 @@ enum_case_pattern : type_identifier? '.' enum_case_name tuple_pattern?  ;
 
 //GRAMMAR OF A TYPE CASTING PATTERN
 
-type_casting_pattern : 'is' type | pattern 'as' type ;
+type_casting_pattern : IS type | pattern AS type ;
 
-is_pattern : 'is' type ;
+is_pattern : IS type ;
 
-as_pattern : pattern 'as' type ;
+as_pattern : pattern AS type ;
 
 //GRAMMAR OF AN EXPRESSION PATTERN
 
@@ -541,7 +541,7 @@ balanced_token : '(' balanced_tokens? ')'
  ;
 
 context_sensitive_keyword :
- 'associativity' | DIDSET | GET | 'infix' | 'inout' | 'left' | 'mutating' | 'none' | 'nonmutating' | 'operator' | 'override' | 'postfix' | 'precedence' | 'prefix' | 'right' | SET | 'unowned' | 'unowned(safe)' | 'unowned(unsafe)' | 'weak' | WILLSET | 'init'
+ 'associativity' | DIDSET | GET | 'infix' | INOUT | 'left' | 'mutating' | 'none' | 'nonmutating' | 'operator' | 'override' | 'postfix' | 'precedence' | 'prefix' | 'right' | SET | 'unowned' | 'unowned(safe)' | 'unowned(unsafe)' | 'weak' | WILLSET | 'init'
  ;
 
 
@@ -577,13 +577,13 @@ assignment_operator : '=' ;
 
 //GRAMMAR OF A CONDITIONAL OPERATOR
 
-conditional_operator : '?' expression ':' ;
+conditional_operator : '?' expression COLON ;
 
 //GRAMMAR OF A TYPE-CASTING OPERATOR
 
-type_casting_operator : 'is' type
- | 'as' type
- | 'as' '?' type
+type_casting_operator : IS type
+ | AS type
+ | AS '?' type
 ;
 
 //GRAMMAR OF A PRIMARY EXPRESSION
@@ -613,11 +613,11 @@ array_literal_items : array_literal_item ','? | array_literal_item (',' array_li
 
 array_literal_item : expression ;
 
-dictionary_literal : '[' dictionary_literal_items ']' | '[' ':' ']' ;
+dictionary_literal : '[' dictionary_literal_items ']' | '[' COLON ']' ;
 
 dictionary_literal_items : dictionary_literal_item ','? | dictionary_literal_item (',' dictionary_literal_item)* ;
 
-dictionary_literal_item : expression ':' expression ;
+dictionary_literal_item : expression COLON expression ;
 
 //GRAMMAR OF A SELF EXPRESSION
 
@@ -662,7 +662,7 @@ parenthesized_expression : '(' expression_element_list? ')' ;
 
 expression_element_list : expression_element | expression_element (',' expression_element )* ;
 
-expression_element : expression | identifier ':' expression ;
+expression_element : expression | identifier COLON expression ;
 
 //GRAMMAR OF A WILDCARD EXPRESSION
 
@@ -752,7 +752,7 @@ type : array_type | dictionary_type
 
 //GRAMMAR OF A TYPE ANNOTATION
 
-type_annotation : ':' attributes? type ;
+type_annotation : COLON attributes? type ;
 
 //GRAMMAR OF A TYPE IDENTIFIER
 
@@ -765,11 +765,11 @@ type_name : identifier ;
 
 tuple_type : '(' tuple_type_body? ')' ;
 
-tuple_type_body : tuple_type_element_list '...'?  ;
+tuple_type_body : tuple_type_element_list DOTDOTDOT?  ;
 
 tuple_type_element_list : tuple_type_element (',' tuple_type_element )* ;
 
-tuple_type_element : attributes? 'inout'? type | 'inout'? element_name type_annotation
+tuple_type_element : attributes? INOUT? type | INOUT? element_name type_annotation
 ;
 
 element_name : identifier ;
@@ -784,7 +784,7 @@ array_type : '[' type ']' ;
 
 //GRAMMAR OF A DICTIONARY TYPE
 
-dictionary_type : '[' type ':' type ']' ;
+dictionary_type : '[' type COLON type ']' ;
 
 //GRAMMAR OF AN OPTIONAL TYPE
 
@@ -808,14 +808,14 @@ metatype_type : type '.' 'Type' | type '.' 'Protocol' ;
 
 //GRAMMAR OF A TYPE INHERITANCE CLAUSE
 
-type_inheritance_clause : ':' class_requirement ',' type_inheritance_list
- | ':' class_requirement
- | ':' type_inheritance_list
+type_inheritance_clause : COLON class_requirement ',' type_inheritance_list
+ | COLON class_requirement
+ | COLON type_inheritance_list
 ;
 
 type_inheritance_list : type_identifier | type_identifier (',' type_identifier )* ;
 
-class_requirement : 'class' ;
+class_requirement : CLASS ;
 
 
 // ---------- Lexical Structure -----------
@@ -857,6 +857,7 @@ DIVIDE : '/';
 DO : 'do';
 DOT : '.';
 DOTDOT : '..';
+DOTDOTDOT : '...';
 EQUALS : '=';
 ELSE : 'else';
 ENUM : 'enum';
@@ -870,6 +871,7 @@ IDIVIDE : '\\';
 IF : 'if';
 IMPORT : 'import';
 IN : 'in';
+INOUT : 'inout';
 IS : 'is' ;
 ISEQUAL : '==';
 LBRACE : '{';
@@ -877,6 +879,9 @@ LBRACKET : '[';
 LET : 'let';
 LPAREN : '(';
 LTHAN : '<';
+LAND : '&&';
+LOR : '||';
+LXOR : '^^';
 SLEFT : '<<';
 SRIGHT : '>>';
 MINUS : '-';
@@ -884,9 +889,7 @@ MINUSMINUS : '--';
 MOD : '%';
 NOTEQUAL : '!=';
 OR : '|';
-LAND : '&&';
-LOR : '||';
-LXOR : '^^';
+POUND : '#';
 OVERRIDE : 'override';
 PLUS : '+' ;
 PLUSPLUS : '++' ;

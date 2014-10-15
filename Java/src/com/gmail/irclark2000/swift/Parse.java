@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.gmail.irclark2000.swift.parser.SwiftLexer;
 import com.gmail.irclark2000.swift.parser.SwiftParser;
+import com.gmail.irclark2000.swift.symbol.Scope;
 
 public class Parse {
 	private static final String FILENAME = "examples/call.swift";
@@ -24,6 +25,10 @@ public class Parse {
 			FileNotFoundException {
 		BufferedInputStream instream = null;
 		ANTLRInputStream antlrStream = null;
+		ParseParameters param = new ParseParameters();
+		
+		param.gScope = new Scope("Global", null);
+		param.fileName = FILENAME;
 		instream = new BufferedInputStream(new FileInputStream(FILENAME));
 		antlrStream = new ANTLRInputStream(instream);
 
@@ -33,7 +38,7 @@ public class Parse {
 				.top_level();
 		// walk the tree and activate so we can listen
 		ParseTreeWalker walker = new ParseTreeWalker();
-		walker.walk(new SwiftTranslatorListener(tokenStream), tree);
+		walker.walk(new SwiftTranslatorListener(tokenStream, param), tree);
 		instream.close();
 	}
 }

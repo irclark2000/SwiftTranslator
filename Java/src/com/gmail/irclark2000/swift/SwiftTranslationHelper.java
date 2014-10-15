@@ -17,5 +17,36 @@ public class SwiftTranslationHelper {
 		// TODO Auto-generated method stub
 		return "";
 	}
-
+	
+	/**
+	 * Appends strings and puts separation character between if needed
+	 * @param target current string
+	 * @param source string to append
+	 * @param sep separation string
+	 * @return appended strings with space between
+	 */
+	public static String appendWithChar(String target, String source, String sep) {
+		String result = "";
+		if (target != null && !target.isEmpty()) {
+			result = target;
+		}
+		if (source != null && !source.isEmpty()) {
+		   if (!result.isEmpty()) {
+			   result += (sep + source);
+		   } else {
+			   result = source;
+		   }
+		}
+		return result;
+	}
+	
+	/**
+	 * Appends strings and puts space between if needed
+	 * @param target current string
+	 * @param source string to append
+	 * @return appended strings with space between
+	 */
+	public static String appendWithSpace(String target, String source) {
+		return appendWithChar(target, source, " ");
+	}
 }
